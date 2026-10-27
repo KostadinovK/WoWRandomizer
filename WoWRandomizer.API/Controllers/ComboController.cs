@@ -15,8 +15,11 @@ public class ComboController : ControllerBase
         _comboService = comboService;
     }
 
-    /// <summary>Returns a random valid race + class combo, optionally limited to one faction.</summary>
-    /// <param name="faction">Optional faction (horde or alliance, case-insensitive). When omitted or empty, any faction can be returned.</param>
+    /// <summary>Returns a random valid race + class combo.</summary>
+    /// <remarks>Every valid combo is equally likely. Optionally limit the result to one faction.</remarks>
+    /// <param name="faction" example="horde">Optional faction: <c>horde</c> or <c>alliance</c> (case-insensitive). When omitted or empty, any faction can be returned.</param>
+    /// <response code="200">A random valid combo.</response>
+    /// <response code="400">The faction is not <c>horde</c> or <c>alliance</c>. The response lists the accepted values.</response>
     [HttpGet]
     [ProducesResponseType<ComboResponse>(StatusCodes.Status200OK)]
     [ProducesResponseType<ProblemDetails>(StatusCodes.Status400BadRequest)]
