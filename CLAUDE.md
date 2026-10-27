@@ -1,0 +1,35 @@
+# WoWRandomizer
+
+A small tool that helps a player decide which race/class combo to play in WoW Forever. The first feature is a single endpoint that returns a random valid combo, optionally filtered by faction (Horde or Alliance).
+
+## Technologies
+- **.NET 10** (LTS) / C#
+- **ASP.NET Core Web API** with controllers, Docker support for Linux
+- **PostgreSQL** (planned) for saving character combinations
+- **Frontend** (planned): Blazor WebAssembly (standalone), calling the API over HTTP
+- **Aspire** may be adopted later; not used for now
+
+## Architecture Philosophy
+We follow Clean Architecture:
+- **Domain** has zero dependencies - pure business logic
+- **Api** is thin - just endpoint definitions and DI wiring
+
+## Code Style
+- Use `var` wherever the type is evident or allowed.
+- Prefer LINQ with **fluent (method) syntax** over query syntax and manual loops.
+- **No Mediator** (no MediatR or similar). Controllers call services directly.
+- **No Mappers** (no AutoMapper or similar). Map between types explicitly in code (constructors, factory methods, or simple projections).
+- Keep business logic in services/domain classes, never in controllers.
+
+## Testing
+- Tests live in a **separate project**; never mix test code into production projects.
+- **Unit tests** project is required and covers Domain and services.
+- An **integration tests** project is added when needed (e.g. API endpoints, database access).
+
+## Domain Notes
+- Valid race/class combos are maintained manually in a single data file (e.g. `Data/combos.json`); there is no public API for this data.
+- Every race belongs to exactly one faction. There are no neutral races for now.
+- Random selection is uniform across all valid combos (after applying the optional faction filter).
+
+## Work Tracking
+- User stories are tracked as GitHub issues in `KostadinovK/WoWRandomizer`.
