@@ -1,5 +1,7 @@
 # WoWRandomizer
 
+[![CI](https://github.com/KostadinovK/WoWRandomizer/actions/workflows/ci.yml/badge.svg)](https://github.com/KostadinovK/WoWRandomizer/actions/workflows/ci.yml)
+
 **Can't decide what to play? Let the dice choose.**
 
 WoWRandomizer is a small tool for **WoW Forever** players who are stuck on the classic question: *which race and class should I roll?* Ask for a character and get a random, **valid** race + class combination, optionally limited to the faction you want to play.
@@ -87,6 +89,8 @@ WoWRandomizer/
 ## Contributing
 
 Work is tracked as user stories in [GitHub issues](https://github.com/KostadinovK/WoWRandomizer/issues). Each story is developed on its own branch named `feat/us-x` (where `x` is the story number) and merged through a pull request against `master`.
+
+Every pull request to `master` is built and tested by the [CI workflow](.github/workflows/ci.yml) (GitHub Actions, check name `build-and-test`). Please make sure it is green before merging.
 
 ## License
 
