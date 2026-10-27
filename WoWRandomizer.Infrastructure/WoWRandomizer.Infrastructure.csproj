@@ -1,0 +1,18 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\WoWRandomizer.Domain\WoWRandomizer.Domain.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <!-- Copied next to the app (not embedded), so the data can be edited without a rebuild. -->
+    <Content Include="Data\combos.json" CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
+
+</Project>

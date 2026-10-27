@@ -1,0 +1,15 @@
+{
+  "races": [
+    { "name": "Orc", "faction": "Horde", "classes": ["Warrior", "Hunter", "Mage", "Rogue", "Warlock", "Shaman"] },
+    { "name": "Tauren", "faction": "Horde", "classes": ["Warrior", "Hunter", "Druid", "Shaman"] },
+    { "name": "Troll", "faction": "Horde", "classes": ["Warrior", "Hunter", "Mage", "Rogue", "Priest", "Warlock", "Shaman"] },
+    { "name": "Undead", "faction": "Horde", "classes": ["Warrior", "Mage", "Rogue", "Priest", "Warlock", "Paladin"] },
+    { "name": "Horde Skyborne", "faction": "Horde", "classes": ["Warrior", "Hunter", "Rogue", "Druid", "Shaman"] },
+
+    { "name": "Gnome", "faction": "Alliance", "classes": ["Warrior", "Mage", "Rogue", "Priest", "Warlock"] },
+    { "name": "Human", "faction": "Alliance", "classes": ["Warrior", "Hunter", "Mage", "Rogue", "Priest", "Warlock", "Paladin"] },
+    { "name": "Night Elf", "faction": "Alliance", "classes": ["Warrior", "Hunter", "Rogue", "Priest", "Druid"] },
+    { "name": "Dwarf", "faction": "Alliance", "classes": ["Warrior", "Hunter", "Rogue", "Priest", "Paladin", "Shaman"] },
+    { "name": "Alliance Skyborne", "faction": "Alliance", "classes": ["Warrior", "Hunter", "Rogue", "Mage", "Druid"] }
+  ]
+}

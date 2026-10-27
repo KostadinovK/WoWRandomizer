@@ -1,6 +1,3 @@
 @WoWRandomizer.API_HostAddress = http://localhost:5078
 
-GET {{WoWRandomizer.API_HostAddress}}/weatherforecast/
-Accept: application/json
-
-###
+# Endpoints are added with the combo user stories (#1, #2).
