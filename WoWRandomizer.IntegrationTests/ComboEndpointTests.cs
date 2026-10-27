@@ -95,6 +95,32 @@ public class ComboEndpointTests : IClassFixture<WebApplicationFactory<Program>>
         AssertIsValidCombo(body);
     }
 
+    // ---------- invalid faction (US-3) ----------
+
+    [Theory]
+    [InlineData("elves")]
+    [InlineData("1")]
+    [InlineData("0")]
+    [InlineData("5")]
+    [InlineData("horde,alliance")]
+    public async Task Get_WithInvalidFaction_ReturnsBadRequestListingAcceptedValues(string query)
+    {
+        var client = _factory.CreateClient();
+
+        var response = await client.GetAsync($"/api/combo?faction={query}");
+        var json = await response.Content.ReadAsStringAsync();
+
+        Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
+        Assert.Equal("application/problem+json", response.Content.Headers.ContentType?.MediaType);
+
+        using var document = JsonDocument.Parse(json);
+        var detail = document.RootElement.GetProperty("detail").GetString();
+        Assert.Contains("horde", detail);
+        Assert.Contains("alliance", detail);
+        Assert.False(document.RootElement.TryGetProperty("race", out _));
+        Assert.False(document.RootElement.TryGetProperty("class", out _));
+    }
+
     private static void AssertIsValidCombo(ComboResponse? body)
     {
         Assert.NotNull(body);

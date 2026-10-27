@@ -108,6 +108,7 @@ public class JsonComboProviderTests
     [InlineData("""{ "races": [ { "name": "Orc", "classes": ["Warrior"] } ] }""")]
     [InlineData("""{ "races": [ { "name": "Orc", "faction": "Elves", "classes": ["Warrior"] } ] }""")]
     [InlineData("""{ "races": [ { "name": "Orc", "faction": "5", "classes": ["Warrior"] } ] }""")]
+    [InlineData("""{ "races": [ { "name": "Orc", "faction": "Horde,Alliance", "classes": ["Warrior"] } ] }""")]
     [InlineData("""{ "races": [ { "name": "Orc", "faction": "Horde" } ] }""")]
     [InlineData("""{ "races": [ { "name": "Orc", "faction": "Horde", "classes": [] } ] }""")]
     [InlineData("""{ "races": [ { "name": "Orc", "faction": "Horde", "classes": ["Warrior", " "] } ] }""")]
