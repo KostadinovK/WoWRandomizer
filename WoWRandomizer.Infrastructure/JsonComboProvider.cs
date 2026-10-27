@@ -79,7 +79,7 @@ public sealed class JsonComboProvider : IComboProvider
             throw new ComboDataException("Every race must have a name.");
         }
 
-        if (!Enum.TryParse<Faction>(race.Faction, ignoreCase: true, out var faction) || !Enum.IsDefined(faction))
+        if (!FactionParser.TryParse(race.Faction, out var faction))
         {
             throw new ComboDataException(
                 $"Race '{name}' has an unknown faction '{race.Faction}'. Expected 'Horde' or 'Alliance'.");
