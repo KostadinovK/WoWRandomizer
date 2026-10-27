@@ -22,7 +22,7 @@ public class ComboController : ControllerBase
     /// <response code="400">The faction is not <c>horde</c> or <c>alliance</c>. The response lists the accepted values.</response>
     [HttpGet]
     [ProducesResponseType<ComboResponse>(StatusCodes.Status200OK)]
-    [ProducesResponseType<ProblemDetails>(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType<ProblemDetails>(StatusCodes.Status400BadRequest, "application/problem+json")]
     public ActionResult<ComboResponse> Get([FromQuery] string? faction)
     {
         if (string.IsNullOrWhiteSpace(faction))
