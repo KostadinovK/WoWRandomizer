@@ -40,3 +40,4 @@ We follow Clean Architecture:
 - Each user story is developed in its own branch named `feat/us-x`, where `x` is the user story number (e.g. `feat/us-1`).
 - When the story is done, open a pull request from that branch against `master`.
 - Never commit directly to `master`.
+- Every pull request is built and tested by GitHub Actions (`.github/workflows/ci.yml`, check `build-and-test`). Do not merge a pull request while that check is failing.
