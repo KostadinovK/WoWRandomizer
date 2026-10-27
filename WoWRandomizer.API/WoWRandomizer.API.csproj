@@ -6,12 +6,17 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <UserSecretsId>0111afaf-c4af-4752-99f1-20d2bd3da432</UserSecretsId>
     <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
-    <DockerfileContext>.</DockerfileContext>
+    <DockerfileContext>..</DockerfileContext>
   </PropertyGroup>
 
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="10.0.12" />
     <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.24.2-preview.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\WoWRandomizer.Domain\WoWRandomizer.Domain.csproj" />
+    <ProjectReference Include="..\WoWRandomizer.Infrastructure\WoWRandomizer.Infrastructure.csproj" />
   </ItemGroup>
 
 </Project>

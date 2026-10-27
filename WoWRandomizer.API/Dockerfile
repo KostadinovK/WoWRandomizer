@@ -1,4 +1,6 @@
 # See https://aka.ms/customizecontainer to learn how to customize your debug container and how Visual Studio uses this Dockerfile to build your images for faster debugging.
+# NOTE: the build context is the repository root (see DockerfileContext in the csproj), e.g.
+#   docker build -f WoWRandomizer.API/Dockerfile .
 
 # This stage is used when running from VS in fast mode (Default for Debug configuration)
 FROM mcr.microsoft.com/dotnet/aspnet:10.0 AS base
@@ -12,10 +14,12 @@ EXPOSE 8081
 FROM mcr.microsoft.com/dotnet/sdk:10.0 AS build
 ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
-COPY ["WoWRandomizer.API.csproj", "."]
-RUN dotnet restore "./WoWRandomizer.API.csproj"
+COPY ["WoWRandomizer.API/WoWRandomizer.API.csproj", "WoWRandomizer.API/"]
+COPY ["WoWRandomizer.Domain/WoWRandomizer.Domain.csproj", "WoWRandomizer.Domain/"]
+COPY ["WoWRandomizer.Infrastructure/WoWRandomizer.Infrastructure.csproj", "WoWRandomizer.Infrastructure/"]
+RUN dotnet restore "./WoWRandomizer.API/WoWRandomizer.API.csproj"
 COPY . .
-WORKDIR "/src/."
+WORKDIR "/src/WoWRandomizer.API"
 RUN dotnet build "./WoWRandomizer.API.csproj" -c $BUILD_CONFIGURATION -o /app/build
 
 # This stage is used to publish the service project to be copied to the final stage
