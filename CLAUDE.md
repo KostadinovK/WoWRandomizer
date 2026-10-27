@@ -13,6 +13,8 @@ A small tool that helps a player decide which race/class combo to play in WoW Fo
 We follow Clean Architecture:
 - **Domain** has zero dependencies - pure business logic
 - **Api** is thin - just endpoint definitions and DI wiring
+- Follow the **SOLID** principles.
+- Every service has an **interface and an implementation** (e.g. `IComboService` and `ComboService`). Consumers depend on the interface, and services are registered in DI against their interface.
 
 ## Code Style
 - Use `var` wherever the type is evident or allowed.

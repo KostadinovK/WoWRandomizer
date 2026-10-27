@@ -15,6 +15,8 @@ var comboFilePath = Path.Combine(
     builder.Configuration["ComboData:FilePath"] ?? Path.Combine("Data", "combos.json"));
 
 builder.Services.AddSingleton<IComboProvider>(JsonComboProvider.FromFile(comboFilePath));
+builder.Services.AddSingleton(Random.Shared);
+builder.Services.AddSingleton<IComboService, ComboService>();
 
 var app = builder.Build();
 
@@ -31,3 +33,6 @@ app.UseAuthorization();
 app.MapControllers();
 
 app.Run();
+
+// Makes the entry point visible to the integration tests (WebApplicationFactory<Program>).
+public partial class Program { }

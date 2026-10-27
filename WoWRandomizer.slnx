@@ -2,5 +2,6 @@
   <Project Path="WoWRandomizer.API/WoWRandomizer.API.csproj" />
   <Project Path="WoWRandomizer.Domain/WoWRandomizer.Domain.csproj" />
   <Project Path="WoWRandomizer.Infrastructure/WoWRandomizer.Infrastructure.csproj" />
+  <Project Path="WoWRandomizer.IntegrationTests/WoWRandomizer.IntegrationTests.csproj" />
   <Project Path="WoWRandomizer.UnitTests/WoWRandomizer.UnitTests.csproj" />
 </Solution>
