@@ -13,13 +13,24 @@ public sealed class ComboService : IComboService
     }
 
     /// <inheritdoc />
-    public Combo GetRandom()
-    {
-        var combos = _comboProvider.GetAll();
+    public Combo GetRandom() =>
+        PickRandom(_comboProvider.GetAll(), "There are no valid combos to choose from.");
 
+    /// <inheritdoc />
+    public Combo GetRandom(Faction faction)
+    {
+        var combos = _comboProvider.GetAll()
+            .Where(combo => combo.Faction == faction)
+            .ToList();
+
+        return PickRandom(combos, $"There are no valid {faction} combos to choose from.");
+    }
+
+    private Combo PickRandom(IReadOnlyList<Combo> combos, string noCombosMessage)
+    {
         if (combos.Count == 0)
         {
-            throw new InvalidOperationException("There are no valid combos to choose from.");
+            throw new InvalidOperationException(noCombosMessage);
         }
 
         return combos[_random.Next(combos.Count)];

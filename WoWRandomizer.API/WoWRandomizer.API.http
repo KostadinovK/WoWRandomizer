@@ -4,3 +4,13 @@ GET {{WoWRandomizer.API_HostAddress}}/api/combo
 Accept: application/json
 
 ###
+
+GET {{WoWRandomizer.API_HostAddress}}/api/combo?faction=horde
+Accept: application/json
+
+###
+
+GET {{WoWRandomizer.API_HostAddress}}/api/combo?faction=alliance
+Accept: application/json
+
+###
