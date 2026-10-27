@@ -16,7 +16,7 @@ var comboFilePath = Path.Combine(
 
 builder.Services.AddSingleton<IComboProvider>(JsonComboProvider.FromFile(comboFilePath));
 builder.Services.AddSingleton(Random.Shared);
-builder.Services.AddSingleton<ComboService>();
+builder.Services.AddSingleton<IComboService, ComboService>();
 
 var app = builder.Build();
 

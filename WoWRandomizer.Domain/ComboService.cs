@@ -1,7 +1,7 @@
 namespace WoWRandomizer.Domain;
 
 /// <summary>Picks random combos from the valid race + class combinations.</summary>
-public sealed class ComboService
+public sealed class ComboService : IComboService
 {
     private readonly IComboProvider _comboProvider;
     private readonly Random _random;
@@ -12,7 +12,7 @@ public sealed class ComboService
         _random = random;
     }
 
-    /// <summary>Returns a combo picked uniformly at random from all valid combos.</summary>
+    /// <inheritdoc />
     public Combo GetRandom()
     {
         var combos = _comboProvider.GetAll();

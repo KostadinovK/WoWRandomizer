@@ -8,9 +8,9 @@ namespace WoWRandomizer.API.Controllers;
 [Route("api/[controller]")]
 public class ComboController : ControllerBase
 {
-    private readonly ComboService _comboService;
+    private readonly IComboService _comboService;
 
-    public ComboController(ComboService comboService)
+    public ComboController(IComboService comboService)
     {
         _comboService = comboService;
     }
