@@ -14,3 +14,8 @@ GET {{WoWRandomizer.API_HostAddress}}/api/combo?faction=alliance
 Accept: application/json
 
 ###
+
+GET {{WoWRandomizer.API_HostAddress}}/api/combo?faction=elves
+Accept: application/json
+
+###
