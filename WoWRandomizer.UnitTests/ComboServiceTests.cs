@@ -12,6 +12,11 @@ public class ComboServiceTests
         new("Troll", "Priest", Faction.Horde)
     ];
 
+    private static JsonComboProvider RealProvider =>
+        JsonComboProvider.FromFile(Path.Combine(AppContext.BaseDirectory, "Data", "combos.json"));
+
+    // ---------- no faction (US-1) ----------
+
     [Fact]
     public void GetRandom_ReturnsAComboFromTheProvider()
     {
@@ -52,7 +57,7 @@ public class ComboServiceTests
     [Fact]
     public void GetRandom_WithTheRealData_CanReturnEveryValidCombo()
     {
-        var provider = JsonComboProvider.FromFile(Path.Combine(AppContext.BaseDirectory, "Data", "combos.json"));
+        var provider = RealProvider;
         var service = new ComboService(provider, new Random(7));
 
         var distinctResults = Enumerable.Range(0, 5000)
@@ -71,27 +76,61 @@ public class ComboServiceTests
         Assert.Throws<InvalidOperationException>(() => service.GetRandom());
     }
 
-    private sealed class FakeComboProvider : IComboProvider
+    // ---------- with faction (US-2) ----------
+
+    [Theory]
+    [InlineData(Faction.Horde)]
+    [InlineData(Faction.Alliance)]
+    public void GetRandom_WithFaction_ReturnsOnlyCombosOfThatFaction(Faction faction)
     {
-        private readonly IReadOnlyList<Combo> _combos;
+        var service = new ComboService(new FakeComboProvider(SampleCombos), new Random(42));
 
-        public FakeComboProvider(params Combo[] combos)
-        {
-            _combos = combos;
-        }
+        var results = Enumerable.Range(0, 200)
+            .Select(_ => service.GetRandom(faction))
+            .ToList();
 
-        public IReadOnlyList<Combo> GetAll() => _combos;
+        Assert.All(results, combo => Assert.Equal(faction, combo.Faction));
     }
 
-    /// <summary>Always picks the last valid index and remembers the upper bound it was asked for.</summary>
-    private sealed class LastIndexRandom : Random
+    [Fact]
+    public void GetRandom_WithFaction_PicksByIndexAcrossOnlyThatFactionsCombos()
     {
-        public int RequestedUpperBound { get; private set; }
+        var random = new LastIndexRandom();
+        var service = new ComboService(new FakeComboProvider(SampleCombos), random);
 
-        public override int Next(int maxValue)
-        {
-            RequestedUpperBound = maxValue;
-            return maxValue - 1;
-        }
+        var combo = service.GetRandom(Faction.Horde);
+
+        // Two of the three sample combos are Horde, so the pick is made over 2 combos, not 3.
+        Assert.Equal(2, random.RequestedUpperBound);
+        Assert.Equal(new Combo("Troll", "Priest", Faction.Horde), combo);
+    }
+
+    [Theory]
+    [InlineData(Faction.Horde)]
+    [InlineData(Faction.Alliance)]
+    public void GetRandom_WithFaction_AndTheRealData_CanReturnEveryComboOfThatFaction(Faction faction)
+    {
+        var provider = RealProvider;
+        var service = new ComboService(provider, new Random(7));
+
+        var expected = provider.GetAll()
+            .Where(combo => combo.Faction == faction)
+            .ToHashSet();
+
+        var results = Enumerable.Range(0, 3000)
+            .Select(_ => service.GetRandom(faction))
+            .ToHashSet();
+
+        Assert.Equal(28, expected.Count);
+        Assert.True(expected.SetEquals(results));
+    }
+
+    [Fact]
+    public void GetRandom_WithFactionThatHasNoCombos_Throws()
+    {
+        var hordeOnly = new FakeComboProvider(new Combo("Orc", "Warrior", Faction.Horde));
+        var service = new ComboService(hordeOnly, new Random(0));
+
+        Assert.Throws<InvalidOperationException>(() => service.GetRandom(Faction.Alliance));
     }
 }
