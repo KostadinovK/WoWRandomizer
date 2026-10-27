@@ -33,3 +33,8 @@ We follow Clean Architecture:
 
 ## Work Tracking
 - User stories are tracked as GitHub issues in `KostadinovK/WoWRandomizer`.
+
+## Git Workflow
+- Each user story is developed in its own branch named `feat/us-x`, where `x` is the user story number (e.g. `feat/us-1`).
+- When the story is done, open a pull request from that branch against `master`.
+- Never commit directly to `master`.
