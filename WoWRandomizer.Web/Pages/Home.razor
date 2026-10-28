@@ -1,6 +1,98 @@
 @page "/"
+@using WoWRandomizer.Shared
+@using WoWRandomizer.Web.Services
+@implements IDisposable
+@inject IComboApiClient ComboApiClient
 
 <h1>WoWRandomizer</h1>
 
 <p>Can't decide what to play? Let the dice choose.</p>
-<p class="hint">The UI foundation is in place. Rolling a random combo from this page comes next.</p>
+
+<button type="button" class="roll-button" disabled="@_isRolling" @onclick="RollAsync">
+    @(_isRolling ? "Rolling…" : "Roll")
+</button>
+
+@if (_isRolling)
+{
+    <p class="loading" role="status">Rolling the dice…</p>
+}
+
+<div class="result-region" aria-live="polite">
+    @if (_combo is not null)
+    {
+        <section class="result @GetFactionClass(_combo.Faction)">
+            <p class="result-title">
+                <span class="result-race">@_combo.Race</span>
+                <span class="result-class">@_combo.Class</span>
+            </p>
+            <p class="result-faction">@_combo.Faction</p>
+        </section>
+    }
+</div>
+
+@if (_errorMessage is not null)
+{
+    <div class="error" role="alert">
+        <p class="error-message">@_errorMessage</p>
+        <button type="button" class="retry-button" disabled="@_isRolling" @onclick="RollAsync">Try again</button>
+    </div>
+}
+
+@code {
+    private const string UnreachableMessage = "We couldn't reach the server. Check your connection and try again.";
+    private const string ApiErrorMessage = "Something went wrong while rolling your character. Please try again.";
+
+    private readonly CancellationTokenSource _cancellation = new();
+
+    private bool _isRolling;
+    private ComboResponse? _combo;
+    private string? _errorMessage;
+
+    private async Task RollAsync()
+    {
+        // The button is disabled while rolling; this also guards against a second click getting through.
+        if (_isRolling)
+        {
+            return;
+        }
+
+        _isRolling = true;
+        _combo = null;
+        _errorMessage = null;
+
+        try
+        {
+            _combo = await ComboApiClient.GetRandomComboAsync(cancellationToken: _cancellation.Token);
+        }
+        catch (OperationCanceledException) when (_cancellation.IsCancellationRequested)
+        {
+            // The page was left while the request was running; there is nothing to show.
+        }
+        catch (Exception exception) when (exception is HttpRequestException or OperationCanceledException)
+        {
+            // Network failure, API not running, CORS or timeout.
+            _errorMessage = UnreachableMessage;
+        }
+        catch (ComboApiException)
+        {
+            _errorMessage = ApiErrorMessage;
+        }
+        finally
+        {
+            _isRolling = false;
+        }
+    }
+
+    private static string GetFactionClass(string faction) => faction.ToLowerInvariant() switch
+    {
+        "horde" => "faction-horde",
+        "alliance" => "faction-alliance",
+        _ => string.Empty
+    };
+
+    public void Dispose()
+    {
+        _cancellation.Cancel();
+        _cancellation.Dispose();
+    }
+}

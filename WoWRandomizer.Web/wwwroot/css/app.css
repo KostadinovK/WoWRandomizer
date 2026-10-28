@@ -1,3 +1,9 @@
+:root {
+    --horde: #b3162a;
+    --alliance: #1b4f9c;
+    --text-muted: #666;
+}
+
 html, body {
     margin: 0;
     font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
@@ -10,7 +16,112 @@ html, body {
 }
 
 .hint {
-    color: #666;
+    color: var(--text-muted);
+}
+
+/* ---------- roll button ---------- */
+
+.roll-button {
+    display: block;
+    width: 100%;
+    margin: 1.5rem 0;
+    padding: 1.1rem 1.5rem;
+    border: 0;
+    border-radius: 0.6rem;
+    background: #2b2f3a;
+    color: #fff;
+    font-size: 1.6rem;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    cursor: pointer;
+}
+
+.roll-button:hover:not(:disabled) {
+    background: #3b4150;
+}
+
+.roll-button:focus-visible,
+.retry-button:focus-visible {
+    outline: 3px solid #f0b429;
+    outline-offset: 2px;
+}
+
+.roll-button:disabled,
+.retry-button:disabled {
+    opacity: 0.6;
+    cursor: progress;
+}
+
+.loading {
+    color: var(--text-muted);
+    text-align: center;
+}
+
+/* ---------- result ---------- */
+
+.result {
+    margin-top: 1rem;
+    padding: 1.25rem 1.5rem;
+    border: 1px solid #ddd;
+    border-left: 0.6rem solid #999;
+    border-radius: 0.6rem;
+}
+
+.result-title {
+    margin: 0;
+    font-size: 2rem;
+    font-weight: 700;
+}
+
+.result-faction {
+    margin: 0.4rem 0 0;
+    font-size: 1.1rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+}
+
+/* Horde is red, Alliance is blue. */
+.result.faction-horde {
+    border-left-color: var(--horde);
+}
+
+.result.faction-horde .result-faction {
+    color: var(--horde);
+}
+
+.result.faction-alliance {
+    border-left-color: var(--alliance);
+}
+
+.result.faction-alliance .result-faction {
+    color: var(--alliance);
+}
+
+/* ---------- error ---------- */
+
+.error {
+    margin-top: 1rem;
+    padding: 1rem 1.25rem;
+    border: 1px solid #e0b4b4;
+    border-radius: 0.6rem;
+    background: #fdf3f3;
+}
+
+.error-message {
+    margin: 0 0 0.75rem;
+}
+
+.retry-button {
+    padding: 0.5rem 1.1rem;
+    border: 1px solid #2b2f3a;
+    border-radius: 0.4rem;
+    background: #fff;
+    color: #2b2f3a;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
 }
 
 #blazor-error-ui {
