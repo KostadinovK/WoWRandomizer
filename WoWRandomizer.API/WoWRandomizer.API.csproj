@@ -20,6 +20,7 @@
   <ItemGroup>
     <ProjectReference Include="..\WoWRandomizer.Domain\WoWRandomizer.Domain.csproj" />
     <ProjectReference Include="..\WoWRandomizer.Infrastructure\WoWRandomizer.Infrastructure.csproj" />
+    <ProjectReference Include="..\WoWRandomizer.Shared\WoWRandomizer.Shared.csproj" />
   </ItemGroup>
 
 </Project>

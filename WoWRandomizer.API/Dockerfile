@@ -17,6 +17,7 @@ WORKDIR /src
 COPY ["WoWRandomizer.API/WoWRandomizer.API.csproj", "WoWRandomizer.API/"]
 COPY ["WoWRandomizer.Domain/WoWRandomizer.Domain.csproj", "WoWRandomizer.Domain/"]
 COPY ["WoWRandomizer.Infrastructure/WoWRandomizer.Infrastructure.csproj", "WoWRandomizer.Infrastructure/"]
+COPY ["WoWRandomizer.Shared/WoWRandomizer.Shared.csproj", "WoWRandomizer.Shared/"]
 RUN dotnet restore "./WoWRandomizer.API/WoWRandomizer.API.csproj"
 COPY . .
 WORKDIR "/src/WoWRandomizer.API"

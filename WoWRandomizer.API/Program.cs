@@ -1,11 +1,27 @@
+using Microsoft.AspNetCore.Cors.Infrastructure;
 using WoWRandomizer.Domain;
 using WoWRandomizer.Infrastructure;
+
+const string WebClientCorsPolicy = "WebClient";
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 
 builder.Services.AddControllers();
+
+// The Blazor WebAssembly UI runs as a separate app, so its origin must be allowed explicitly.
+// Origins come from configuration (Cors:AllowedOrigins); none are allowed unless configured.
+builder.Services.AddCors();
+builder.Services.AddOptions<CorsOptions>().Configure<IConfiguration>((options, configuration) =>
+{
+    var allowedOrigins = configuration.GetSection("Cors:AllowedOrigins").Get<string[]>() ?? [];
+
+    options.AddPolicy(WebClientCorsPolicy, policy => policy
+        .WithOrigins(allowedOrigins)
+        .WithMethods(HttpMethods.Get)
+        .AllowAnyHeader());
+});
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
 
@@ -28,6 +44,8 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
+app.UseCors(WebClientCorsPolicy);
 
 app.UseAuthorization();
 

@@ -3,5 +3,8 @@
   <Project Path="WoWRandomizer.Domain/WoWRandomizer.Domain.csproj" />
   <Project Path="WoWRandomizer.Infrastructure/WoWRandomizer.Infrastructure.csproj" />
   <Project Path="WoWRandomizer.IntegrationTests/WoWRandomizer.IntegrationTests.csproj" />
+  <Project Path="WoWRandomizer.Shared/WoWRandomizer.Shared.csproj" />
   <Project Path="WoWRandomizer.UnitTests/WoWRandomizer.UnitTests.csproj" />
+  <Project Path="WoWRandomizer.Web/WoWRandomizer.Web.csproj" />
+  <Project Path="WoWRandomizer.Web.ComponentTests/WoWRandomizer.Web.ComponentTests.csproj" />
 </Solution>
