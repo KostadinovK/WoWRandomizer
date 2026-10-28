@@ -6,7 +6,7 @@ A small tool that helps a player decide which race/class combo to play in WoW Fo
 - **.NET 10** (LTS) / C#
 - **ASP.NET Core Web API** with controllers, Docker support for Linux
 - **PostgreSQL** (planned) for saving character combinations
-- **Frontend** (planned): Blazor WebAssembly (standalone), calling the API over HTTP
+- **Frontend**: Blazor WebAssembly (standalone, `WoWRandomizer.Web`), a separate app calling the API over HTTP through a typed client (`IComboApiClient`). Types shared with the API live in `WoWRandomizer.Shared`. Component tests use **bUnit**.
 - **Aspire** may be adopted later; not used for now
 
 ## Architecture Philosophy

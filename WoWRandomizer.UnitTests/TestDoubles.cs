@@ -25,3 +25,23 @@ internal sealed class LastIndexRandom : Random
         return maxValue - 1;
     }
 }
+
+/// <summary>Answers every request with a canned response and remembers the URIs it was asked for.</summary>
+internal sealed class StubHttpMessageHandler : HttpMessageHandler
+{
+    private readonly Func<HttpRequestMessage, HttpResponseMessage> _respond;
+
+    public StubHttpMessageHandler(Func<HttpRequestMessage, HttpResponseMessage> respond)
+    {
+        _respond = respond;
+    }
+
+    public List<string> RequestedUris { get; } = [];
+
+    protected override Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
+    {
+        RequestedUris.Add(request.RequestUri!.AbsoluteUri);
+
+        return Task.FromResult(_respond(request));
+    }
+}

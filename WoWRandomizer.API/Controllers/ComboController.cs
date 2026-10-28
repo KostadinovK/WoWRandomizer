@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using WoWRandomizer.API.Models;
 using WoWRandomizer.Domain;
+using WoWRandomizer.Shared;
 
 namespace WoWRandomizer.API.Controllers;
 
@@ -27,7 +28,7 @@ public class ComboController : ControllerBase
     {
         if (string.IsNullOrWhiteSpace(faction))
         {
-            return ComboResponse.From(_comboService.GetRandom());
+            return _comboService.GetRandom().ToResponse();
         }
 
         if (!FactionParser.TryParse(faction, out var parsedFaction))
@@ -38,6 +39,6 @@ public class ComboController : ControllerBase
                 statusCode: StatusCodes.Status400BadRequest);
         }
 
-        return ComboResponse.From(_comboService.GetRandom(parsedFaction));
+        return _comboService.GetRandom(parsedFaction).ToResponse();
     }
 }

@@ -16,10 +16,12 @@ WoWRandomizer is a small tool for **WoW Forever** players who are stuck on the c
 - Clear error messages for invalid input
 - OpenAPI/Swagger documentation for trying the API in the browser
 
+- A Blazor WebAssembly web app (separate from the API) with a typed API client; the roll UI itself is being built in the next stories
+
 ### Planned
 
+- Roll a combo from the web UI, with faction choice, icons and roll history
 - Save and browse character combinations (PostgreSQL)
-- Simple web UI (Blazor WebAssembly)
 - Random spec selection
 
 ## API
@@ -47,9 +49,9 @@ An unsupported faction returns `400 Bad Request` with the list of accepted value
 ## Tech stack
 
 - **.NET 10** / C#, ASP.NET Core Web API
+- **Blazor WebAssembly** (standalone) for the web UI, with **bUnit** component tests
 - **Docker** (Linux containers)
 - **PostgreSQL** (planned)
-- **Blazor WebAssembly** (planned)
 
 ## Getting started
 
@@ -60,13 +62,37 @@ An unsupported faction returns `400 Bad Request` with the list of accepted value
 
 ### Run locally
 
+The API and the web UI are two separate apps, so start each one in its own terminal.
+
+**1. The API** (`http://localhost:5078`)
+
 ```bash
 git clone https://github.com/KostadinovK/WoWRandomizer.git
 cd WoWRandomizer/WoWRandomizer.API
-dotnet run
+dotnet run --launch-profile http
 ```
 
 Once the API is running, open the Swagger UI at `/swagger` on the URL printed in the console (when enabled in the Development environment).
+
+**2. The web UI** (`http://localhost:5180`)
+
+```bash
+cd WoWRandomizer/WoWRandomizer.Web
+dotnet run --launch-profile http
+```
+
+Then open `http://localhost:5180` in your browser.
+
+### Configuration
+
+| Setting | Where | Purpose |
+| --- | --- | --- |
+| `ApiBaseUrl` | `WoWRandomizer.Web/wwwroot/appsettings.json` | Base URL of the API the web UI calls (default `http://localhost:5078`). |
+| `Cors:AllowedOrigins` | `WoWRandomizer.API/appsettings*.json` | Origins allowed to call the API from a browser. Empty by default; `appsettings.Development.json` allows the local web UI (`http://localhost:5180` and `https://localhost:7180`). |
+
+To deploy the web UI somewhere else, point `ApiBaseUrl` at the API and add the web UI's origin (scheme, host and port, no trailing slash) to `Cors:AllowedOrigins`. The API can also read it from an environment variable, e.g. `Cors__AllowedOrigins__0=https://my-web-ui.example`.
+
+When using the `https` launch profile of the API, set `ApiBaseUrl` to its `https://localhost:7097` address; a redirect from `http` to `https` would otherwise break the browser's cross-origin call.
 
 ### Run tests
 
@@ -80,9 +106,15 @@ The project follows Clean Architecture: the Domain holds pure business logic wit
 
 ```
 WoWRandomizer/
-├── WoWRandomizer.API/    # Web API (thin: controllers and DI wiring)
-├── ...                   # Domain and test projects are added as stories land
-├── CLAUDE.md             # Conventions for AI-assisted development
+├── WoWRandomizer.API/                  # Web API (thin: controllers and DI wiring)
+├── WoWRandomizer.Domain/               # Pure business logic, no dependencies
+├── WoWRandomizer.Infrastructure/       # Data access (combos.json)
+├── WoWRandomizer.Shared/               # Contract types shared by the API and the web UI (ComboResponse)
+├── WoWRandomizer.Web/                  # Blazor WebAssembly UI and the typed API client
+├── WoWRandomizer.UnitTests/            # Unit tests (Domain, services, API client)
+├── WoWRandomizer.IntegrationTests/     # API endpoint tests
+├── WoWRandomizer.Web.ComponentTests/   # bUnit component tests for the web UI
+├── CLAUDE.md                           # Conventions for AI-assisted development
 └── README.md
 ```
 
