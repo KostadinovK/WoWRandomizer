@@ -16,11 +16,11 @@ WoWRandomizer is a small tool for **WoW Forever** players who are stuck on the c
 - Clear error messages for invalid input
 - OpenAPI/Swagger documentation for trying the API in the browser
 
-- A Blazor WebAssembly web app (separate from the API) with a typed API client; the roll UI itself is being built in the next stories
+- A Blazor WebAssembly web app (separate from the API): press **Roll** to get a random race, class and faction (Horde in red, Alliance in blue), with a loading state and a friendly error message with retry
 
 ### Planned
 
-- Roll a combo from the web UI, with faction choice, icons and roll history
+- Choose a faction in the web UI, plus race/class/faction icons, a dark WoW-inspired design and roll history
 - Save and browse character combinations (PostgreSQL)
 - Random spec selection
 
@@ -81,7 +81,7 @@ cd WoWRandomizer/WoWRandomizer.Web
 dotnet run --launch-profile http
 ```
 
-Then open `http://localhost:5180` in your browser.
+Then open `http://localhost:5180` in your browser and press **Roll**. The API must be running, otherwise the page shows a "couldn't reach the server" message with a **Try again** button.
 
 ### Configuration
 
