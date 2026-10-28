@@ -14,6 +14,6 @@ var apiBaseUrl = builder.Configuration["ApiBaseUrl"]
 // A trailing slash is required so relative request paths are appended to the base address.
 var apiBaseAddress = new Uri(apiBaseUrl.TrimEnd('/') + "/");
 
-builder.Services.AddHttpClient<IComboApiClient, ComboApiClient>(client => client.BaseAddress = apiBaseAddress);
+builder.Services.AddScoped<IComboApiClient>(_ => new ComboApiClient(new HttpClient { BaseAddress = apiBaseAddress }));
 
 await builder.Build().RunAsync();
