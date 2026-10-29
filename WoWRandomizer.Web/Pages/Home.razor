@@ -19,7 +19,7 @@
                     aria-pressed="@(isSelected ? "true" : "false")"
                     disabled="@_isRolling"
                     @onclick="() => ToggleFaction(option.Value)">
-                <span class="faction-icon faction-icon-@option.Value" aria-hidden="true"></span>
+                <GameIcon Src="@IconPaths.Faction(option.Label)" Name="@option.Label" />
                 <span class="faction-option-name">@option.Label</span>
             </button>
         }
@@ -41,10 +41,19 @@
     {
         <section class="result @GetFactionClass(_combo.Faction)">
             <p class="result-title">
-                <span class="result-race">@_combo.Race</span>
-                <span class="result-class">@_combo.Class</span>
+                <span class="result-part">
+                    <GameIcon Src="@IconPaths.Race(_combo.Race)" Alt="@_combo.Race" Name="@_combo.Race" />
+                    <span class="result-race">@_combo.Race</span>
+                </span>
+                <span class="result-part">
+                    <GameIcon Src="@IconPaths.Class(_combo.Class)" Alt="@_combo.Class" Name="@_combo.Class" />
+                    <span class="result-class">@_combo.Class</span>
+                </span>
             </p>
-            <p class="result-faction">@_combo.Faction</p>
+            <p class="result-faction">
+                <GameIcon Src="@IconPaths.Faction(_combo.Faction)" Alt="@_combo.Faction" Name="@_combo.Faction" />
+                <span class="result-faction-name">@_combo.Faction</span>
+            </p>
         </section>
     }
 </div>

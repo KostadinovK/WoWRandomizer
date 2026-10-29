@@ -59,7 +59,7 @@ public class HomeTests : TestContext
         Assert.All(options, option =>
         {
             Assert.Equal("false", option.GetAttribute("aria-pressed"));
-            Assert.NotNull(option.QuerySelector(".faction-icon"));
+            Assert.NotNull(option.QuerySelector(".game-icon img"));
         });
     }
 
@@ -173,7 +173,7 @@ public class HomeTests : TestContext
         {
             Assert.Equal("Orc", cut.Find(".result-race").TextContent);
             Assert.Equal("Warrior", cut.Find(".result-class").TextContent);
-            Assert.Equal("Horde", cut.Find(".result-faction").TextContent);
+            Assert.Equal("Horde", cut.Find(".result-faction-name").TextContent);
         });
         Assert.Equal(1, _client.CallCount);
     }
@@ -189,6 +189,75 @@ public class HomeTests : TestContext
         cut.Find("button.roll-button").Click();
 
         cut.WaitForAssertion(() => Assert.Single(cut.FindAll($".result.{expectedCssClass}")));
+    }
+
+    // ---------- icons ----------
+
+    [Fact]
+    public void Roll_ShowsTheRaceClassAndFactionIconsWithAltText()
+    {
+        _client.EnqueueResult(new ComboResponse("Night Elf", "Druid", "Alliance"));
+        var cut = RenderComponent<Home>();
+
+        cut.Find("button.roll-button").Click();
+
+        cut.WaitForAssertion(() =>
+        {
+            var icons = cut.FindAll(".result img").Select(img => (img.GetAttribute("src"), img.GetAttribute("alt"))).ToList();
+            Assert.Equal(
+                [
+                    ("icons/races/night-elf.png", "Night Elf"),
+                    ("icons/classes/druid.png", "Druid"),
+                    ("icons/factions/alliance.png", "Alliance")
+                ],
+                icons);
+        });
+    }
+
+    [Fact]
+    public void Roll_GivesEveryIconAHiddenInitialFallbackForAMissingFile()
+    {
+        _client.EnqueueResult(new ComboResponse("Orc", "Warrior", "Horde"));
+        var cut = RenderComponent<Home>();
+
+        cut.Find("button.roll-button").Click();
+
+        cut.WaitForAssertion(() =>
+        {
+            var icons = cut.FindAll(".result .game-icon");
+            Assert.Equal(["O", "W", "H"], icons.Select(icon => icon.QuerySelector(".game-icon-fallback")!.GetAttribute("data-initial")));
+            Assert.All(icons, icon =>
+            {
+                Assert.True(icon.QuerySelector(".game-icon-fallback")!.HasAttribute("hidden"));
+                Assert.Contains("this.hidden = true", icon.QuerySelector("img")!.GetAttribute("onerror"));
+            });
+        });
+    }
+
+    [Fact]
+    public void Roll_ForARaceWithoutAnIconFile_StillRendersTheResult()
+    {
+        _client.EnqueueResult(new ComboResponse("Blood Elf", "Paladin", "Horde"));
+        var cut = RenderComponent<Home>();
+
+        cut.Find("button.roll-button").Click();
+
+        cut.WaitForAssertion(() =>
+        {
+            Assert.Equal("Blood Elf", cut.Find(".result-race").TextContent);
+            Assert.Equal("icons/races/blood-elf.png", cut.Find(".result img").GetAttribute("src"));
+            Assert.Equal("B", cut.Find(".result .game-icon-fallback").GetAttribute("data-initial"));
+        });
+    }
+
+    [Fact]
+    public void FactionButtons_ShowTheFactionIcons()
+    {
+        var cut = RenderComponent<Home>();
+
+        var sources = cut.FindAll("button.faction-option img").Select(img => img.GetAttribute("src"));
+
+        Assert.Equal(["icons/factions/horde.png", "icons/factions/alliance.png"], sources);
     }
 
     [Fact]
@@ -207,7 +276,7 @@ public class HomeTests : TestContext
             Assert.Single(cut.FindAll(".result"));
             Assert.Equal("Human", cut.Find(".result-race").TextContent);
             Assert.Equal("Paladin", cut.Find(".result-class").TextContent);
-            Assert.Equal("Alliance", cut.Find(".result-faction").TextContent);
+            Assert.Equal("Alliance", cut.Find(".result-faction-name").TextContent);
             Assert.DoesNotContain("Orc", cut.Markup);
         });
         Assert.Equal(2, _client.CallCount);
