@@ -178,11 +178,12 @@ html, body {
 
 .result-title {
     margin: 0;
-    font-size: 2rem;
+    font-size: 1.4rem;
     font-weight: 700;
+    /* Race and class each get their own row. */
     display: flex;
-    flex-wrap: wrap;
-    gap: 0.25rem 1rem;
+    flex-direction: column;
+    gap: 0.5rem;
 }
 
 .result-part,
@@ -193,8 +194,8 @@ html, body {
 }
 
 .result-part .game-icon {
-    width: 2.2rem;
-    height: 2.2rem;
+    width: 2rem;
+    height: 2rem;
 }
 
 .result-faction {
@@ -210,7 +211,8 @@ html, body {
     border-left-color: var(--horde);
 }
 
-.result.faction-horde .result-faction {
+.result.faction-horde .result-faction,
+.result.faction-horde .result-title {
     color: var(--horde);
 }
 
@@ -218,7 +220,8 @@ html, body {
     border-left-color: var(--alliance);
 }
 
-.result.faction-alliance .result-faction {
+.result.faction-alliance .result-faction,
+.result.faction-alliance .result-title {
     color: var(--alliance);
 }
 
