@@ -27,7 +27,7 @@ public class HomeTests : TestContext
         var cut = RenderComponent<Home>();
 
         Assert.Equal("WoWRandomizer", cut.Find("h1").TextContent);
-        Assert.Contains("Let the dice choose", cut.Markup);
+        Assert.Contains("Let the fate choose", cut.Markup);
         Assert.Equal("Roll", cut.Find("button.roll-button").TextContent.Trim());
         Assert.False(cut.Find("button.roll-button").HasAttribute("disabled"));
     }
