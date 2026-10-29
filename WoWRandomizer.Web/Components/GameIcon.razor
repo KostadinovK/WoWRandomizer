@@ -1,0 +1,17 @@
+<span class="game-icon">
+    <img src="@Src" alt="@Alt" onerror="this.hidden = true; this.nextElementSibling.hidden = false;" />
+    <span class="game-icon-fallback" aria-hidden="true" data-initial="@Initial" hidden></span>
+</span>
+
+@code {
+    /// <summary>Path of the icon, relative to the site root.</summary>
+    [Parameter, EditorRequired] public string Src { get; set; } = string.Empty;
+
+    /// <summary>Alternative text. Leave empty when the icon sits next to its own name.</summary>
+    [Parameter] public string Alt { get; set; } = string.Empty;
+
+    /// <summary>Name the fallback initial is taken from; shown only when the image file is missing.</summary>
+    [Parameter, EditorRequired] public string Name { get; set; } = string.Empty;
+
+    private string Initial => Name.Trim().Length > 0 ? Name.Trim()[..1].ToUpperInvariant() : "?";
+}

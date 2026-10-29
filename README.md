@@ -18,9 +18,11 @@ WoWRandomizer is a small tool for **WoW Forever** players who are stuck on the c
 
 - A Blazor WebAssembly web app (separate from the API): press **Roll** to get a random race, class and faction (Horde in red, Alliance in blue), with a loading state and a friendly error message with retry
 
+- Race, class and faction icons next to their names in the result (see [Icons](#icons))
+
 ### Planned
 
-- Choose a faction in the web UI, plus race/class/faction icons, a dark WoW-inspired design and roll history
+- A dark WoW-inspired design and roll history
 - Save and browse character combinations (PostgreSQL)
 - Random spec selection
 
@@ -45,6 +47,20 @@ Example response:
 ```
 
 An unsupported faction returns `400 Bad Request` with the list of accepted values (`horde`, `alliance`). The `faction` value is case-insensitive.
+
+## Icons
+
+The web UI shows an icon for every race, class and faction. The icons are **game assets supplied by the repository owner**; they are not generated or downloaded by the app.
+
+They live in `WoWRandomizer.Web/wwwroot/icons/` as PNG files, one folder per kind. The file name is the name in **lower case with spaces replaced by dashes**, for example `Night Elf` becomes `night-elf.png`. The path is built in one place, `IconPaths` (`WoWRandomizer.Web/Services/IconPaths.cs`).
+
+| Folder | Expected files |
+| --- | --- |
+| `icons/races/` | `orc`, `tauren`, `troll`, `undead`, `horde-skyborne`, `gnome`, `human`, `night-elf`, `dwarf`, `alliance-skyborne` |
+| `icons/classes/` | `warrior`, `hunter`, `mage`, `rogue`, `priest`, `warlock`, `shaman`, `druid`, `paladin` |
+| `icons/factions/` | `horde`, `alliance` |
+
+Each file is `<name>.png`. If a file is missing, the UI shows a grey circle with the first letter of the name instead, and nothing else breaks. A unit test checks that every race, class and faction in `combos.json` has an icon file, so adding a new race or class also means adding its icon.
 
 ## Tech stack
 
