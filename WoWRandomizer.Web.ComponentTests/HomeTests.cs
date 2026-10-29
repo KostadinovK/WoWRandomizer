@@ -27,7 +27,7 @@ public class HomeTests : TestContext
         var cut = RenderComponent<Home>();
 
         Assert.Equal("WoWRandomizer", cut.Find("h1").TextContent);
-        Assert.Contains("Let the dice choose", cut.Markup);
+        Assert.Contains("Let the fate choose", cut.Markup);
         Assert.Equal("Roll", cut.Find("button.roll-button").TextContent.Trim());
         Assert.False(cut.Find("button.roll-button").HasAttribute("disabled"));
     }
@@ -42,6 +42,122 @@ public class HomeTests : TestContext
         Assert.Empty(cut.FindAll(".loading"));
         Assert.Equal(0, _client.CallCount);
     }
+
+    // ---------- faction selector ----------
+
+    [Fact]
+    public void FactionSelector_RendersAnAccessibleGroupWithHordeAndAllianceOnly()
+    {
+        var cut = RenderComponent<Home>();
+
+        var group = cut.Find("[role=group]");
+        var labelId = group.GetAttribute("aria-labelledby");
+        Assert.Equal("Faction", cut.Find($"#{labelId}").TextContent);
+
+        var options = group.QuerySelectorAll("button.faction-option").ToList();
+        Assert.Equal(["Horde", "Alliance"], options.Select(option => option.TextContent.Trim()));
+        Assert.All(options, option =>
+        {
+            Assert.Equal("false", option.GetAttribute("aria-pressed"));
+            Assert.NotNull(option.QuerySelector(".faction-icon"));
+        });
+    }
+
+    [Fact]
+    public void Roll_WithNoFactionSelected_SendsNoFaction()
+    {
+        _client.EnqueueResult(OrcWarrior);
+        var cut = RenderComponent<Home>();
+
+        cut.Find("button.roll-button").Click();
+
+        cut.WaitForAssertion(() => Assert.NotEmpty(cut.FindAll(".result")));
+        Assert.Equal([null], _client.Factions);
+    }
+
+    [Theory]
+    [InlineData("Horde", "horde")]
+    [InlineData("Alliance", "alliance")]
+    public void Roll_WithAFactionSelected_SendsThatFaction(string label, string expectedFaction)
+    {
+        _client.EnqueueResult(OrcWarrior);
+        var cut = RenderComponent<Home>();
+
+        FactionButton(cut, label).Click();
+        cut.Find("button.roll-button").Click();
+
+        cut.WaitForAssertion(() => Assert.NotEmpty(cut.FindAll(".result")));
+        Assert.Equal([expectedFaction], _client.Factions);
+        Assert.Equal("true", FactionButton(cut, label).GetAttribute("aria-pressed"));
+        Assert.Contains("selected", FactionButton(cut, label).ClassList);
+    }
+
+    [Fact]
+    public void FactionSelector_SelectingTheOtherFaction_LeavesOnlyTheLatestSelected()
+    {
+        var cut = RenderComponent<Home>();
+
+        FactionButton(cut, "Horde").Click();
+        FactionButton(cut, "Alliance").Click();
+
+        Assert.Equal("false", FactionButton(cut, "Horde").GetAttribute("aria-pressed"));
+        Assert.Equal("true", FactionButton(cut, "Alliance").GetAttribute("aria-pressed"));
+    }
+
+    [Fact]
+    public void FactionSelector_ClickingTheSelectedFactionAgain_ClearsItAndRollsWithAnyFaction()
+    {
+        _client.EnqueueResult(OrcWarrior);
+        var cut = RenderComponent<Home>();
+
+        FactionButton(cut, "Horde").Click();
+        FactionButton(cut, "Horde").Click();
+        cut.Find("button.roll-button").Click();
+
+        cut.WaitForAssertion(() => Assert.NotEmpty(cut.FindAll(".result")));
+        Assert.Equal("false", FactionButton(cut, "Horde").GetAttribute("aria-pressed"));
+        Assert.Equal([null], _client.Factions);
+    }
+
+    [Fact]
+    public void FactionSelector_KeepsTheSelectionWhenRollingAgainAndAfterAnError()
+    {
+        _client.EnqueueResult(OrcWarrior);
+        _client.EnqueueFailure(new HttpRequestException("Failed to fetch"));
+        _client.EnqueueResult(OrcWarrior);
+        var cut = RenderComponent<Home>();
+
+        FactionButton(cut, "Horde").Click();
+        cut.Find("button.roll-button").Click();
+        cut.WaitForAssertion(() => Assert.NotEmpty(cut.FindAll(".result")));
+        cut.Find("button.roll-button").Click();
+        cut.WaitForAssertion(() => Assert.NotEmpty(cut.FindAll(".error")));
+        cut.Find("button.retry-button").Click();
+        cut.WaitForAssertion(() => Assert.NotEmpty(cut.FindAll(".result")));
+
+        Assert.Equal(["horde", "horde", "horde"], _client.Factions);
+        Assert.Equal("true", FactionButton(cut, "Horde").GetAttribute("aria-pressed"));
+    }
+
+    [Fact]
+    public void FactionSelector_WhileTheRequestIsRunning_IsDisabled()
+    {
+        var pending = new TaskCompletionSource<ComboResponse>();
+        _client.Enqueue(() => pending.Task);
+        var cut = RenderComponent<Home>();
+
+        cut.Find("button.roll-button").Click();
+
+        Assert.All(cut.FindAll("button.faction-option"), option => Assert.True(option.HasAttribute("disabled")));
+
+        pending.SetResult(OrcWarrior);
+
+        cut.WaitForAssertion(() =>
+            Assert.All(cut.FindAll("button.faction-option"), option => Assert.False(option.HasAttribute("disabled"))));
+    }
+
+    private static AngleSharp.Dom.IElement FactionButton(IRenderedComponent<Home> cut, string label) =>
+        cut.FindAll("button.faction-option").Single(option => option.TextContent.Trim() == label);
 
     // ---------- success ----------
 

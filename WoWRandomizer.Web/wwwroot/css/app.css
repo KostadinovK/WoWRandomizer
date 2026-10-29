@@ -19,6 +19,89 @@ html, body {
     color: var(--text-muted);
 }
 
+/* ---------- faction selector ---------- */
+
+.faction-selector {
+    margin-top: 1.5rem;
+}
+
+.faction-label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: 600;
+}
+
+.faction-options {
+    display: flex;
+    gap: 0.75rem;
+}
+
+.faction-option {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.6rem;
+    padding: 0.8rem 1rem;
+    border: 2px solid #ccc;
+    border-radius: 0.6rem;
+    background: #fff;
+    color: #2b2f3a;
+    font-size: 1.1rem;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.faction-option:hover:not(:disabled) {
+    border-color: #888;
+}
+
+.faction-option:focus-visible {
+    outline: 3px solid #f0b429;
+    outline-offset: 2px;
+}
+
+.faction-option:disabled {
+    opacity: 0.6;
+    cursor: progress;
+}
+
+.faction-option.selected {
+    color: #fff;
+}
+
+.faction-option-horde.selected {
+    border-color: var(--horde);
+    background: var(--horde);
+}
+
+.faction-option-alliance.selected {
+    border-color: var(--alliance);
+    background: var(--alliance);
+}
+
+/* Placeholder emblems until the icons story adds the real faction icons. */
+.faction-icon {
+    width: 1.2rem;
+    height: 1.2rem;
+    border-radius: 50%;
+    border: 2px solid currentColor;
+}
+
+.faction-icon-horde {
+    background: var(--horde);
+}
+
+.faction-icon-alliance {
+    background: var(--alliance);
+}
+
+.faction-hint {
+    margin: 0.5rem 0 0;
+    color: var(--text-muted);
+    font-size: 0.9rem;
+}
+
 /* ---------- roll button ---------- */
 
 .roll-button {

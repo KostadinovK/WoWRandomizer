@@ -10,6 +10,9 @@ internal sealed class FakeComboApiClient : IComboApiClient
 
     public int CallCount { get; private set; }
 
+    /// <summary>The faction argument of each call, in order.</summary>
+    public List<string?> Factions { get; } = [];
+
     public void Enqueue(Func<Task<ComboResponse>> response) => _responses.Enqueue(response);
 
     public void EnqueueResult(ComboResponse combo) => Enqueue(() => Task.FromResult(combo));
@@ -19,6 +22,7 @@ internal sealed class FakeComboApiClient : IComboApiClient
     public Task<ComboResponse> GetRandomComboAsync(string? faction = null, CancellationToken cancellationToken = default)
     {
         CallCount++;
+        Factions.Add(faction);
 
         return _responses.Count > 0
             ? _responses.Dequeue()()

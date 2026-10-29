@@ -6,7 +6,26 @@
 
 <h1>WoWRandomizer</h1>
 
-<p>Can't decide what to play? Let the dice choose.</p>
+<p>Can't decide what to play? Let the fate choose.</p>
+
+<div class="faction-selector" role="group" aria-labelledby="faction-label">
+    <span id="faction-label" class="faction-label">Faction</span>
+    <div class="faction-options">
+        @foreach (var option in FactionOptions)
+        {
+            var isSelected = _selectedFaction == option.Value;
+            <button type="button"
+                    class="@GetOptionClass(option.Value, isSelected)"
+                    aria-pressed="@(isSelected ? "true" : "false")"
+                    disabled="@_isRolling"
+                    @onclick="() => ToggleFaction(option.Value)">
+                <span class="faction-icon faction-icon-@option.Value" aria-hidden="true"></span>
+                <span class="faction-option-name">@option.Label</span>
+            </button>
+        }
+    </div>
+    <p class="faction-hint">@(_selectedFaction is null ? "No faction selected: any faction." : $"Only {_selectedFaction} combos.")</p>
+</div>
 
 <button type="button" class="roll-button" disabled="@_isRolling" @onclick="RollAsync">
     @(_isRolling ? "Rolling…" : "Roll")
@@ -42,11 +61,21 @@
     private const string UnreachableMessage = "We couldn't reach the server. Check your connection and try again.";
     private const string ApiErrorMessage = "Something went wrong while rolling your character. Please try again.";
 
+    private static readonly (string Value, string Label)[] FactionOptions =
+    [
+        ("horde", "Horde"),
+        ("alliance", "Alliance")
+    ];
+
     private readonly CancellationTokenSource _cancellation = new();
 
+    private string? _selectedFaction;
     private bool _isRolling;
     private ComboResponse? _combo;
     private string? _errorMessage;
+
+    // Clicking the selected faction again clears it, which means any faction.
+    private void ToggleFaction(string faction) => _selectedFaction = _selectedFaction == faction ? null : faction;
 
     private async Task RollAsync()
     {
@@ -62,7 +91,7 @@
 
         try
         {
-            _combo = await ComboApiClient.GetRandomComboAsync(cancellationToken: _cancellation.Token);
+            _combo = await ComboApiClient.GetRandomComboAsync(_selectedFaction, _cancellation.Token);
         }
         catch (OperationCanceledException) when (_cancellation.IsCancellationRequested)
         {
@@ -82,6 +111,9 @@
             _isRolling = false;
         }
     }
+
+    private static string GetOptionClass(string faction, bool isSelected) =>
+        $"faction-option faction-option-{faction}{(isSelected ? " selected" : string.Empty)}";
 
     private static string GetFactionClass(string faction) => faction.ToLowerInvariant() switch
     {
