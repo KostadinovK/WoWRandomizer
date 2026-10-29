@@ -5,7 +5,7 @@
 @inject IComboApiClient ComboApiClient
 @inject IRollHistory History
 
-<h1>WoWRandomizer</h1>
+<h1>Roll your next character</h1>
 
 <p>Can't decide what to play? Let the fate choose.</p>
 
@@ -40,7 +40,7 @@
 <div class="result-region" aria-live="polite">
     @if (_combo is not null)
     {
-        <section class="result @GetFactionClass(_combo.Faction)">
+        <section class="result @GetFactionClass(_combo.Faction) class-@IconPaths.Slug(_combo.Class)">
             <p class="result-title">
                 <span class="result-part">
                     <GameIcon Src="@IconPaths.Race(_combo.Race)" Alt="@_combo.Race" Name="@_combo.Race" />

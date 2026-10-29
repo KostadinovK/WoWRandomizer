@@ -18,13 +18,13 @@ WoWRandomizer is a small tool for **WoW Forever** players who are stuck on the c
 
 - A Blazor WebAssembly web app (separate from the API): press **Roll** to get a random race, class and faction (Horde in red, Alliance in blue), with a loading state and a friendly error message with retry
 
+- A dark, WoW-inspired theme: the result card takes the class colour, with a short reveal animation (off for reduced motion), a responsive layout and a header and footer
 - Race, class and faction icons next to their names in the result (see [Icons](#icons))
 
 - History of the last 10 rolls (newest first, kept for the current browser session) with a **Clear history** button
 
 ### Planned
 
-- A dark WoW-inspired design
 - Save and browse character combinations (PostgreSQL)
 - Random spec selection
 
