@@ -1,0 +1,47 @@
+@using WoWRandomizer.Shared
+@using WoWRandomizer.Web.Services
+
+@if (Entries.Count > 0)
+{
+    <section class="history" aria-labelledby="history-heading">
+        <div class="history-header">
+            <h2 id="history-heading" class="history-heading">History</h2>
+            <button type="button" class="clear-history-button" @onclick="OnClear">Clear history</button>
+        </div>
+
+        <ol class="history-list">
+            @foreach (var entry in Entries)
+            {
+                <li class="history-entry @GetFactionClass(entry.Faction)">
+                    <span class="history-part">
+                        <GameIcon Src="@IconPaths.Race(entry.Race)" Alt="@entry.Race" Name="@entry.Race" />
+                        <span class="history-race">@entry.Race</span>
+                    </span>
+                    <span class="history-part">
+                        <GameIcon Src="@IconPaths.Class(entry.Class)" Alt="@entry.Class" Name="@entry.Class" />
+                        <span class="history-class">@entry.Class</span>
+                    </span>
+                    <span class="history-part history-faction">
+                        <GameIcon Src="@IconPaths.Faction(entry.Faction)" Alt="@entry.Faction" Name="@entry.Faction" />
+                        <span class="history-faction-name">@entry.Faction</span>
+                    </span>
+                </li>
+            }
+        </ol>
+    </section>
+}
+
+@code {
+    /// <summary>The rolls to show, newest first.</summary>
+    [Parameter, EditorRequired] public IReadOnlyList<ComboResponse> Entries { get; set; } = [];
+
+    /// <summary>Raised when the clear button is pressed.</summary>
+    [Parameter] public EventCallback OnClear { get; set; }
+
+    private static string GetFactionClass(string faction) => faction.ToLowerInvariant() switch
+    {
+        "horde" => "faction-horde",
+        "alliance" => "faction-alliance",
+        _ => string.Empty
+    };
+}

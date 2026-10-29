@@ -20,9 +20,11 @@ WoWRandomizer is a small tool for **WoW Forever** players who are stuck on the c
 
 - Race, class and faction icons next to their names in the result (see [Icons](#icons))
 
+- History of the last 10 rolls (newest first, kept for the current browser session) with a **Clear history** button
+
 ### Planned
 
-- A dark WoW-inspired design and roll history
+- A dark WoW-inspired design
 - Save and browse character combinations (PostgreSQL)
 - Random spec selection
 
