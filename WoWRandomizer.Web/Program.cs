@@ -16,4 +16,7 @@ var apiBaseAddress = new Uri(apiBaseUrl.TrimEnd('/') + "/");
 
 builder.Services.AddScoped<IComboApiClient>(_ => new ComboApiClient(new HttpClient { BaseAddress = apiBaseAddress }));
 
+// One history for the whole page: it keeps the rolls while the app runs and is empty after a reload.
+builder.Services.AddSingleton<IRollHistory, RollHistory>();
+
 await builder.Build().RunAsync();

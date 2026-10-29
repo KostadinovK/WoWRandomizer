@@ -17,6 +17,7 @@ public class HomeTests : TestContext
     public HomeTests()
     {
         Services.AddSingleton<IComboApiClient>(_client);
+        Services.AddSingleton<IRollHistory, RollHistory>();
     }
 
     // ---------- initial page ----------
@@ -191,6 +192,105 @@ public class HomeTests : TestContext
         cut.WaitForAssertion(() => Assert.Single(cut.FindAll($".result.{expectedCssClass}")));
     }
 
+    // ---------- history ----------
+
+    private void RollOnce(IRenderedComponent<Home> cut, ComboResponse combo, int expectedCalls)
+    {
+        _client.EnqueueResult(combo);
+        cut.Find("button.roll-button").Click();
+        cut.WaitForAssertion(() =>
+        {
+            Assert.Equal(expectedCalls, _client.CallCount);
+            Assert.False(cut.Find("button.roll-button").HasAttribute("disabled"));
+        });
+    }
+
+    [Fact]
+    public void History_BeforeTheFirstRoll_IsNotShown()
+    {
+        var cut = RenderComponent<Home>();
+
+        Assert.Empty(cut.FindAll(".history"));
+        Assert.Empty(cut.FindAll(".clear-history-button"));
+    }
+
+    [Fact]
+    public void History_ListsTheRollsNewestFirstWithIcons()
+    {
+        var cut = RenderComponent<Home>();
+
+        RollOnce(cut, OrcWarrior, 1);
+        RollOnce(cut, new ComboResponse("Night Elf", "Druid", "Alliance"), 2);
+
+        var entries = cut.FindAll(".history-entry");
+        Assert.Equal(2, entries.Count);
+        Assert.Equal("Night Elf", entries[0].QuerySelector(".history-race")!.TextContent);
+        Assert.Equal("Druid", entries[0].QuerySelector(".history-class")!.TextContent);
+        Assert.Equal("Alliance", entries[0].QuerySelector(".history-faction-name")!.TextContent);
+        Assert.Contains("faction-alliance", entries[0].ClassList);
+        Assert.Equal("Orc", entries[1].QuerySelector(".history-race")!.TextContent);
+        Assert.Equal(
+            ["icons/races/night-elf.png", "icons/classes/druid.png", "icons/factions/alliance.png"],
+            entries[0].QuerySelectorAll("img").Select(img => img.GetAttribute("src")));
+        Assert.Equal(["Night Elf", "Druid", "Alliance"], entries[0].QuerySelectorAll("img").Select(img => img.GetAttribute("alt")));
+    }
+
+    [Fact]
+    public void History_ShowsAtMostTheLastTenRolls()
+    {
+        var cut = RenderComponent<Home>();
+
+        foreach (var number in Enumerable.Range(1, 12))
+        {
+            RollOnce(cut, new ComboResponse($"Race{number}", "Warrior", "Horde"), number);
+        }
+
+        var races = cut.FindAll(".history-race").Select(race => race.TextContent).ToList();
+        Assert.Equal(10, races.Count);
+        Assert.Equal("Race12", races[0]);
+        Assert.Equal("Race3", races[^1]);
+    }
+
+    [Fact]
+    public void History_WhenARollFails_DoesNotAddAnEntry()
+    {
+        var cut = RenderComponent<Home>();
+        RollOnce(cut, OrcWarrior, 1);
+        _client.EnqueueFailure(new HttpRequestException("Failed to fetch"));
+
+        cut.Find("button.roll-button").Click();
+
+        cut.WaitForAssertion(() => Assert.NotEmpty(cut.FindAll(".error")));
+        Assert.Single(cut.FindAll(".history-entry"));
+    }
+
+    [Fact]
+    public void ClearHistory_RemovesTheListButKeepsTheCurrentResult()
+    {
+        var cut = RenderComponent<Home>();
+        RollOnce(cut, OrcWarrior, 1);
+        RollOnce(cut, HumanPaladin, 2);
+
+        cut.Find("button.clear-history-button").Click();
+
+        Assert.Empty(cut.FindAll(".history"));
+        Assert.Empty(cut.FindAll(".clear-history-button"));
+        Assert.Equal("Human", cut.Find(".result-race").TextContent);
+    }
+
+    [Fact]
+    public void ClearHistory_ThenRolling_StartsAFreshList()
+    {
+        var cut = RenderComponent<Home>();
+        RollOnce(cut, OrcWarrior, 1);
+        cut.Find("button.clear-history-button").Click();
+
+        RollOnce(cut, HumanPaladin, 2);
+
+        var races = cut.FindAll(".history-race").Select(race => race.TextContent);
+        Assert.Equal(["Human"], races);
+    }
+
     // ---------- icons ----------
 
     [Fact]
@@ -277,7 +377,7 @@ public class HomeTests : TestContext
             Assert.Equal("Human", cut.Find(".result-race").TextContent);
             Assert.Equal("Paladin", cut.Find(".result-class").TextContent);
             Assert.Equal("Alliance", cut.Find(".result-faction-name").TextContent);
-            Assert.DoesNotContain("Orc", cut.Markup);
+            Assert.DoesNotContain("Orc", cut.Find(".result").InnerHtml);
         });
         Assert.Equal(2, _client.CallCount);
     }

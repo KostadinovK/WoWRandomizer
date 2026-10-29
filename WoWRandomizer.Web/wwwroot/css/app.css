@@ -267,3 +267,85 @@ html, body {
     right: 0.75rem;
     top: 0.5rem;
 }
+
+/* ---------- history ---------- */
+
+.history {
+    margin-top: 2rem;
+}
+
+.history-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+}
+
+.history-heading {
+    margin: 0;
+    font-size: 1.1rem;
+}
+
+.clear-history-button {
+    padding: 0.35rem 0.8rem;
+    border: 1px solid #2b2f3a;
+    border-radius: 0.4rem;
+    background: #fff;
+    color: #2b2f3a;
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.clear-history-button:focus-visible {
+    outline: 3px solid #f0b429;
+    outline-offset: 2px;
+}
+
+.history-list {
+    margin: 0.75rem 0 0;
+    padding: 0;
+    list-style: none;
+}
+
+.history-entry {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.25rem 1.25rem;
+    margin-bottom: 0.5rem;
+    padding: 0.5rem 0.9rem;
+    border: 1px solid #ddd;
+    border-left: 0.4rem solid #999;
+    border-radius: 0.5rem;
+    font-size: 0.95rem;
+    font-weight: 600;
+}
+
+.history-entry.faction-horde {
+    border-left-color: var(--horde);
+    color: var(--horde);
+}
+
+.history-entry.faction-alliance {
+    border-left-color: var(--alliance);
+    color: var(--alliance);
+}
+
+.history-part {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+}
+
+.history-part .game-icon {
+    width: 1.5rem;
+    height: 1.5rem;
+}
+
+.history-faction {
+    margin-left: auto;
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+}
