@@ -12,6 +12,9 @@ public static class IconPaths
 
     public static string Faction(string name) => Build("factions", name);
 
-    private static string Build(string folder, string name) =>
-        $"icons/{folder}/{string.Join('-', name.Split(' ', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries)).ToLowerInvariant()}.png";
+    /// <summary>The name in lower case with spaces as dashes, for example <c>Night Elf</c> becomes <c>night-elf</c>.</summary>
+    public static string Slug(string name) =>
+        string.Join('-', name.Split(' ', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries)).ToLowerInvariant();
+
+    private static string Build(string folder, string name) => $"icons/{folder}/{Slug(name)}.png";
 }

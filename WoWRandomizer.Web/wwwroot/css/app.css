@@ -1,39 +1,173 @@
+/* ---------- design tokens ---------- */
+
 :root {
+    color-scheme: dark;
+
+    /* surfaces and text (dark only) */
+    --bg: #0e1016;
+    --surface: #171a23;
+    --surface-raised: #1f2330;
+    --border: #2e3446;
+    --text: #e8e6e1;
+    --text-muted: #a0a5b4;
+    --gold: #c89b3c;
+    --on-gold: #1b1405;
+    --focus: #f0b429;
+    --danger-bg: #2a1518;
+    --danger-border: #6b2a31;
+
+    /* factions: fills/borders, and lighter variants for text on the dark surface */
     --horde: #b3162a;
     --alliance: #1b4f9c;
-    --text-muted: #666;
+    --horde-text: #ff6b6b;
+    --alliance-text: #6aa8ff;
+
+    /* class colours */
+    --class-warrior: #c79c6e;
+    --class-paladin: #f58cba;
+    --class-hunter: #abd473;
+    --class-rogue: #fff569;
+    --class-priest: #ffffff;
+    --class-shaman: #0070de;
+    --class-shaman-text: #3d9bff;
+    --class-mage: #69ccf0;
+    --class-warlock: #9482c9;
+    --class-druid: #ff7d0a;
+
+    /* spacing, radius, type */
+    --space-1: 0.25rem;
+    --space-2: 0.5rem;
+    --space-3: 0.75rem;
+    --space-4: 1rem;
+    --space-5: 1.5rem;
+    --space-6: 2rem;
+    --radius-s: 0.4rem;
+    --radius-m: 0.6rem;
+    --radius-l: 0.9rem;
+    --font-s: 0.9rem;
+    --font-m: 1rem;
+    --font-l: 1.4rem;
+    --font-xl: 1.9rem;
+    --tap-target: 2.75rem;
 }
+
+/* ---------- base ---------- */
 
 html, body {
     margin: 0;
+    min-height: 100%;
+    background: var(--bg);
+    color: var(--text);
     font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+    line-height: 1.5;
+}
+
+body {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+#app {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
 }
 
 .app {
+    flex: 1;
+    width: 100%;
     max-width: 40rem;
+    box-sizing: border-box;
     margin: 0 auto;
-    padding: 2rem 1rem;
+    padding: var(--space-5) var(--space-4) var(--space-6);
+}
+
+h1 {
+    margin: 0 0 var(--space-2);
+    font-size: var(--font-xl);
+    line-height: 1.2;
+}
+
+:focus-visible {
+    outline: 3px solid var(--focus);
+    outline-offset: 2px;
 }
 
 .hint {
     color: var(--text-muted);
 }
 
+/* ---------- header, footer, skip link ---------- */
+
+.site-header {
+    border-bottom: 1px solid var(--border);
+    background: var(--surface);
+}
+
+.site-header-inner,
+.site-footer-inner {
+    max-width: 40rem;
+    box-sizing: border-box;
+    margin: 0 auto;
+    padding: var(--space-3) var(--space-4);
+}
+
+.brand {
+    color: var(--gold);
+    font-size: var(--font-l);
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+}
+
+.site-footer {
+    border-top: 1px solid var(--border);
+    background: var(--surface);
+    color: var(--text-muted);
+    font-size: var(--font-s);
+}
+
+.site-footer p {
+    margin: 0;
+}
+
+.skip-link {
+    position: absolute;
+    left: var(--space-2);
+    top: -4rem;
+    z-index: 10;
+    padding: var(--space-2) var(--space-4);
+    border-radius: var(--radius-s);
+    background: var(--gold);
+    color: var(--on-gold);
+    font-weight: 700;
+}
+
+.skip-link:focus {
+    top: var(--space-2);
+}
+
+#app-loading {
+    margin: auto;
+    color: var(--text-muted);
+}
+
 /* ---------- faction selector ---------- */
 
 .faction-selector {
-    margin-top: 1.5rem;
+    margin-top: var(--space-5);
 }
 
 .faction-label {
     display: block;
-    margin-bottom: 0.5rem;
+    margin-bottom: var(--space-2);
     font-weight: 600;
 }
 
 .faction-options {
     display: flex;
-    gap: 0.75rem;
+    gap: var(--space-3);
 }
 
 .faction-option {
@@ -41,24 +175,20 @@ html, body {
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 0.6rem;
-    padding: 0.8rem 1rem;
-    border: 2px solid #ccc;
-    border-radius: 0.6rem;
-    background: #fff;
-    color: #2b2f3a;
+    gap: var(--space-2);
+    min-height: var(--tap-target);
+    padding: var(--space-2) var(--space-4);
+    border: 2px solid var(--border);
+    border-radius: var(--radius-m);
+    background: var(--surface-raised);
+    color: var(--text);
     font-size: 1.1rem;
     font-weight: 600;
     cursor: pointer;
 }
 
 .faction-option:hover:not(:disabled) {
-    border-color: #888;
-}
-
-.faction-option:focus-visible {
-    outline: 3px solid #f0b429;
-    outline-offset: 2px;
+    border-color: var(--text-muted);
 }
 
 .faction-option:disabled {
@@ -71,13 +201,19 @@ html, body {
 }
 
 .faction-option-horde.selected {
-    border-color: var(--horde);
+    border-color: var(--horde-text);
     background: var(--horde);
 }
 
 .faction-option-alliance.selected {
-    border-color: var(--alliance);
+    border-color: var(--alliance-text);
     background: var(--alliance);
+}
+
+.faction-hint {
+    margin: var(--space-2) 0 0;
+    color: var(--text-muted);
+    font-size: var(--font-s);
 }
 
 /* ---------- game icons ---------- */
@@ -95,7 +231,7 @@ html, body {
     width: 100%;
     height: 100%;
     object-fit: contain;
-    border-radius: 0.25rem;
+    border-radius: var(--radius-s);
 }
 
 /* Shown instead of the image when the icon file is missing. */
@@ -106,8 +242,8 @@ html, body {
     width: 100%;
     height: 100%;
     border-radius: 50%;
-    background: #888;
-    color: #fff;
+    background: var(--text-muted);
+    color: var(--bg);
     font-size: 0.85em;
     font-weight: 700;
 }
@@ -121,38 +257,32 @@ html, body {
     display: none;
 }
 
-.faction-hint {
-    margin: 0.5rem 0 0;
-    color: var(--text-muted);
-    font-size: 0.9rem;
-}
-
 /* ---------- roll button ---------- */
 
 .roll-button {
     display: block;
     width: 100%;
-    margin: 1.5rem 0;
-    padding: 1.1rem 1.5rem;
+    min-height: var(--tap-target);
+    margin: var(--space-5) 0;
+    padding: var(--space-4) var(--space-5);
     border: 0;
-    border-radius: 0.6rem;
-    background: #2b2f3a;
-    color: #fff;
+    border-radius: var(--radius-m);
+    background: var(--gold);
+    color: var(--on-gold);
     font-size: 1.6rem;
-    font-weight: 700;
+    font-weight: 800;
     letter-spacing: 0.05em;
     text-transform: uppercase;
     cursor: pointer;
+    transition: filter 0.15s ease, transform 0.1s ease;
 }
 
 .roll-button:hover:not(:disabled) {
-    background: #3b4150;
+    filter: brightness(1.12);
 }
 
-.roll-button:focus-visible,
-.retry-button:focus-visible {
-    outline: 3px solid #f0b429;
-    outline-offset: 2px;
+.roll-button:active:not(:disabled) {
+    transform: translateY(1px);
 }
 
 .roll-button:disabled,
@@ -169,28 +299,48 @@ html, body {
 /* ---------- result ---------- */
 
 .result {
-    margin-top: 1rem;
-    padding: 1.25rem 1.5rem;
-    border: 1px solid #ddd;
-    border-left: 0.6rem solid #999;
-    border-radius: 0.6rem;
+    --accent: var(--border);
+    --accent-text: var(--text);
+    --faction-text: var(--text);
+
+    margin-top: var(--space-4);
+    padding: var(--space-5);
+    border: 1px solid var(--border);
+    border-left: 0.5rem solid var(--accent);
+    border-radius: var(--radius-m);
+    background: var(--surface-raised);
+    box-shadow: 0 0 1.5rem -0.5rem var(--accent);
+    animation: reveal 0.4s ease-out;
+}
+
+@keyframes reveal {
+    from {
+        opacity: 0;
+        transform: translateY(0.75rem) scale(0.98);
+        box-shadow: 0 0 0 0 transparent;
+    }
+
+    to {
+        opacity: 1;
+        transform: none;
+        box-shadow: 0 0 1.5rem -0.5rem var(--accent);
+    }
 }
 
 .result-title {
-    margin: 0;
-    font-size: 1.4rem;
-    font-weight: 700;
-    /* Race and class each get their own row. */
     display: flex;
     flex-direction: column;
-    gap: 0.5rem;
+    gap: var(--space-2);
+    margin: 0;
+    font-size: var(--font-l);
+    font-weight: 700;
 }
 
 .result-part,
 .result-faction {
     display: flex;
     align-items: center;
-    gap: 0.5rem;
+    gap: var(--space-2);
 }
 
 .result-part .game-icon {
@@ -198,56 +348,72 @@ html, body {
     height: 2rem;
 }
 
+/* The race takes the faction colour, the class its own class colour. */
+.result-race {
+    color: var(--faction-text);
+}
+
+.result-class {
+    color: var(--accent-text);
+}
+
 .result-faction {
-    margin: 0.4rem 0 0;
+    margin: var(--space-2) 0 0;
+    color: var(--faction-text);
     font-size: 1.1rem;
     font-weight: 600;
     text-transform: uppercase;
     letter-spacing: 0.08em;
 }
 
-/* Horde is red, Alliance is blue. */
-.result.faction-horde {
-    border-left-color: var(--horde);
+.faction-horde {
+    --faction-text: var(--horde-text);
 }
 
-.result.faction-horde .result-faction,
-.result.faction-horde .result-title {
-    color: var(--horde);
+.faction-alliance {
+    --faction-text: var(--alliance-text);
 }
 
-.result.faction-alliance {
-    border-left-color: var(--alliance);
-}
-
-.result.faction-alliance .result-faction,
-.result.faction-alliance .result-title {
-    color: var(--alliance);
-}
+.class-warrior { --accent: var(--class-warrior); --accent-text: var(--class-warrior); }
+.class-paladin { --accent: var(--class-paladin); --accent-text: var(--class-paladin); }
+.class-hunter { --accent: var(--class-hunter); --accent-text: var(--class-hunter); }
+.class-rogue { --accent: var(--class-rogue); --accent-text: var(--class-rogue); }
+.class-priest { --accent: var(--class-priest); --accent-text: var(--class-priest); }
+.class-shaman { --accent: var(--class-shaman); --accent-text: var(--class-shaman-text); }
+.class-mage { --accent: var(--class-mage); --accent-text: var(--class-mage); }
+.class-warlock { --accent: var(--class-warlock); --accent-text: var(--class-warlock); }
+.class-druid { --accent: var(--class-druid); --accent-text: var(--class-druid); }
 
 /* ---------- error ---------- */
 
 .error {
-    margin-top: 1rem;
-    padding: 1rem 1.25rem;
-    border: 1px solid #e0b4b4;
-    border-radius: 0.6rem;
-    background: #fdf3f3;
+    margin-top: var(--space-4);
+    padding: var(--space-4) var(--space-5);
+    border: 1px solid var(--danger-border);
+    border-radius: var(--radius-m);
+    background: var(--danger-bg);
 }
 
 .error-message {
-    margin: 0 0 0.75rem;
+    margin: 0 0 var(--space-3);
 }
 
-.retry-button {
-    padding: 0.5rem 1.1rem;
-    border: 1px solid #2b2f3a;
-    border-radius: 0.4rem;
-    background: #fff;
-    color: #2b2f3a;
-    font-size: 1rem;
+.retry-button,
+.clear-history-button {
+    min-height: var(--tap-target);
+    padding: var(--space-2) var(--space-4);
+    border: 1px solid var(--text-muted);
+    border-radius: var(--radius-s);
+    background: var(--surface-raised);
+    color: var(--text);
+    font-size: var(--font-m);
     font-weight: 600;
     cursor: pointer;
+}
+
+.retry-button:hover:not(:disabled),
+.clear-history-button:hover {
+    border-color: var(--text);
 }
 
 #blazor-error-ui {
@@ -257,8 +423,13 @@ html, body {
     left: 0;
     right: 0;
     padding: 0.6rem 1.25rem;
-    background: #ffffe0;
-    box-shadow: 0 -1px 2px rgba(0, 0, 0, 0.2);
+    background: var(--danger-bg);
+    border-top: 1px solid var(--danger-border);
+    color: var(--text);
+}
+
+#blazor-error-ui a {
+    color: var(--focus);
 }
 
 #blazor-error-ui .dismiss {
@@ -271,14 +442,14 @@ html, body {
 /* ---------- history ---------- */
 
 .history {
-    margin-top: 2rem;
+    margin-top: var(--space-6);
 }
 
 .history-header {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    gap: 1rem;
+    gap: var(--space-4);
 }
 
 .history-heading {
@@ -286,24 +457,8 @@ html, body {
     font-size: 1.1rem;
 }
 
-.clear-history-button {
-    padding: 0.35rem 0.8rem;
-    border: 1px solid #2b2f3a;
-    border-radius: 0.4rem;
-    background: #fff;
-    color: #2b2f3a;
-    font-size: 0.9rem;
-    font-weight: 600;
-    cursor: pointer;
-}
-
-.clear-history-button:focus-visible {
-    outline: 3px solid #f0b429;
-    outline-offset: 2px;
-}
-
 .history-list {
-    margin: 0.75rem 0 0;
+    margin: var(--space-3) 0 0;
     padding: 0;
     list-style: none;
 }
@@ -312,24 +467,20 @@ html, body {
     display: flex;
     flex-wrap: wrap;
     align-items: center;
-    gap: 0.25rem 1.25rem;
-    margin-bottom: 0.5rem;
-    padding: 0.5rem 0.9rem;
-    border: 1px solid #ddd;
-    border-left: 0.4rem solid #999;
-    border-radius: 0.5rem;
+    gap: var(--space-1) var(--space-5);
+    margin-bottom: var(--space-2);
+    padding: var(--space-2) var(--space-4);
+    border: 1px solid var(--border);
+    border-left: 0.4rem solid var(--faction-text, var(--text));
+    border-radius: var(--radius-m);
+    background: var(--surface);
     font-size: 0.95rem;
     font-weight: 600;
 }
 
-.history-entry.faction-horde {
-    border-left-color: var(--horde);
-    color: var(--horde);
-}
-
-.history-entry.faction-alliance {
-    border-left-color: var(--alliance);
-    color: var(--alliance);
+.history-race,
+.history-faction {
+    color: var(--faction-text, var(--text));
 }
 
 .history-part {
@@ -348,4 +499,31 @@ html, body {
     font-size: 0.8rem;
     text-transform: uppercase;
     letter-spacing: 0.06em;
+}
+
+/* ---------- small screens ---------- */
+
+@media (max-width: 30rem) {
+    h1 {
+        font-size: var(--font-l);
+    }
+
+    .roll-button {
+        font-size: 1.4rem;
+    }
+
+    .history-faction {
+        margin-left: 0;
+    }
+}
+
+/* ---------- reduced motion ---------- */
+
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        animation: none !important;
+        transition: none !important;
+    }
 }

@@ -1,11 +1,29 @@
 @inherits LayoutComponentBase
 
-<main class="app">
+<a class="skip-link" href="@SkipTarget">Skip to content</a>
+
+<header class="site-header">
+    <div class="site-header-inner">
+        <span class="brand">WoWRandomizer</span>
+    </div>
+</header>
+
+<main class="app" id="main-content" tabindex="-1">
     @Body
 </main>
+
+<footer class="site-footer">
+    <div class="site-footer-inner">
+        <p>WoWRandomizer is a fan project and is not affiliated with Blizzard Entertainment.</p>
+    </div>
+</footer>
 
 <div id="blazor-error-ui" data-nosnippet>
     An unhandled error has occurred.
     <a href="." class="reload">Reload</a>
     <span class="dismiss">🗙</span>
 </div>
+
+@code {
+    private const string SkipTarget = "#main-content";
+}

@@ -27,7 +27,7 @@ public class HomeTests : TestContext
     {
         var cut = RenderComponent<Home>();
 
-        Assert.Equal("WoWRandomizer", cut.Find("h1").TextContent);
+        Assert.Equal("Roll your next character", cut.Find("h1").TextContent);
         Assert.Contains("Let the fate choose", cut.Markup);
         Assert.Equal("Roll", cut.Find("button.roll-button").TextContent.Trim());
         Assert.False(cut.Find("button.roll-button").HasAttribute("disabled"));
@@ -289,6 +289,34 @@ public class HomeTests : TestContext
 
         var races = cut.FindAll(".history-race").Select(race => race.TextContent);
         Assert.Equal(["Human"], races);
+    }
+
+    // ---------- class colour ----------
+
+    [Theory]
+    [InlineData("Warrior", "class-warrior")]
+    [InlineData("Paladin", "class-paladin")]
+    [InlineData("Hunter", "class-hunter")]
+    [InlineData("Rogue", "class-rogue")]
+    [InlineData("Priest", "class-priest")]
+    [InlineData("Shaman", "class-shaman")]
+    [InlineData("Mage", "class-mage")]
+    [InlineData("Warlock", "class-warlock")]
+    [InlineData("Druid", "class-druid")]
+    public void Roll_GivesTheResultCardTheClassColourClass(string characterClass, string expectedCssClass)
+    {
+        _client.EnqueueResult(new ComboResponse("Orc", characterClass, "Horde"));
+        var cut = RenderComponent<Home>();
+
+        cut.Find("button.roll-button").Click();
+
+        cut.WaitForAssertion(() =>
+        {
+            var card = cut.Find(".result");
+            Assert.Contains(expectedCssClass, card.ClassList);
+            Assert.Contains("faction-horde", card.ClassList);
+            Assert.Equal(characterClass, cut.Find(".result-class").TextContent);
+        });
     }
 
     // ---------- icons ----------
