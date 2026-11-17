@@ -7,7 +7,7 @@ public class RollHistoryTests
 {
     private readonly IRollHistory _history = new RollHistory();
 
-    private static ComboResponse Combo(int number) => new($"Race{number}", $"Class{number}", "Horde");
+    private static ComboResponse Combo(int number) => new($"Race{number}", $"Class{number}", "Horde", new SpecResponse("Fury", ["DPS"]));
 
     [Fact]
     public void NewHistory_IsEmpty()

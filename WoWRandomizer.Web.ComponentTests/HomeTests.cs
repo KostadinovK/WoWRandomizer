@@ -9,8 +9,8 @@ namespace WoWRandomizer.Web.ComponentTests;
 
 public class HomeTests : TestContext
 {
-    private static readonly ComboResponse OrcWarrior = new("Orc", "Warrior", "Horde");
-    private static readonly ComboResponse HumanPaladin = new("Human", "Paladin", "Alliance");
+    private static readonly ComboResponse OrcWarrior = new("Orc", "Warrior", "Horde", new SpecResponse("Fury", ["DPS"]));
+    private static readonly ComboResponse HumanPaladin = new("Human", "Paladin", "Alliance", new SpecResponse("Holy", ["Healer"]));
 
     private readonly FakeComboApiClient _client = new();
 
@@ -184,7 +184,7 @@ public class HomeTests : TestContext
     [InlineData("Human", "Paladin", "Alliance", "faction-alliance")]
     public void Roll_StylesTheResultByFaction(string race, string characterClass, string faction, string expectedCssClass)
     {
-        _client.EnqueueResult(new ComboResponse(race, characterClass, faction));
+        _client.EnqueueResult(new ComboResponse(race, characterClass, faction, new SpecResponse("Fury", ["DPS"])));
         var cut = RenderComponent<Home>();
 
         cut.Find("button.roll-button").Click();
@@ -220,7 +220,7 @@ public class HomeTests : TestContext
         var cut = RenderComponent<Home>();
 
         RollOnce(cut, OrcWarrior, 1);
-        RollOnce(cut, new ComboResponse("Night Elf", "Druid", "Alliance"), 2);
+        RollOnce(cut, new ComboResponse("Night Elf", "Druid", "Alliance", new SpecResponse("Feral Combat", ["Tank", "DPS"])), 2);
 
         var entries = cut.FindAll(".history-entry");
         Assert.Equal(2, entries.Count);
@@ -242,7 +242,7 @@ public class HomeTests : TestContext
 
         foreach (var number in Enumerable.Range(1, 12))
         {
-            RollOnce(cut, new ComboResponse($"Race{number}", "Warrior", "Horde"), number);
+            RollOnce(cut, new ComboResponse($"Race{number}", "Warrior", "Horde", new SpecResponse("Fury", ["DPS"])), number);
         }
 
         var races = cut.FindAll(".history-race").Select(race => race.TextContent).ToList();
@@ -305,7 +305,7 @@ public class HomeTests : TestContext
     [InlineData("Druid", "class-druid")]
     public void Roll_GivesTheResultCardTheClassColourClass(string characterClass, string expectedCssClass)
     {
-        _client.EnqueueResult(new ComboResponse("Orc", characterClass, "Horde"));
+        _client.EnqueueResult(new ComboResponse("Orc", characterClass, "Horde", new SpecResponse("Fury", ["DPS"])));
         var cut = RenderComponent<Home>();
 
         cut.Find("button.roll-button").Click();
@@ -324,7 +324,7 @@ public class HomeTests : TestContext
     [Fact]
     public void Roll_ShowsTheRaceClassAndFactionIconsWithAltText()
     {
-        _client.EnqueueResult(new ComboResponse("Night Elf", "Druid", "Alliance"));
+        _client.EnqueueResult(new ComboResponse("Night Elf", "Druid", "Alliance", new SpecResponse("Feral Combat", ["Tank", "DPS"])));
         var cut = RenderComponent<Home>();
 
         cut.Find("button.roll-button").Click();
@@ -345,7 +345,7 @@ public class HomeTests : TestContext
     [Fact]
     public void Roll_GivesEveryIconAHiddenInitialFallbackForAMissingFile()
     {
-        _client.EnqueueResult(new ComboResponse("Orc", "Warrior", "Horde"));
+        _client.EnqueueResult(new ComboResponse("Orc", "Warrior", "Horde", new SpecResponse("Fury", ["DPS"])));
         var cut = RenderComponent<Home>();
 
         cut.Find("button.roll-button").Click();
@@ -365,7 +365,7 @@ public class HomeTests : TestContext
     [Fact]
     public void Roll_ForARaceWithoutAnIconFile_StillRendersTheResult()
     {
-        _client.EnqueueResult(new ComboResponse("Blood Elf", "Paladin", "Horde"));
+        _client.EnqueueResult(new ComboResponse("Blood Elf", "Paladin", "Horde", new SpecResponse("Holy", ["Healer"])));
         var cut = RenderComponent<Home>();
 
         cut.Find("button.roll-button").Click();

@@ -8,7 +8,7 @@ namespace WoWRandomizer.UnitTests;
 public class ComboApiClientTests
 {
     private const string BaseAddress = "http://api.test/";
-    private const string ComboJson = """{"race":"Orc","class":"Warrior","faction":"Horde"}""";
+    private const string ComboJson = """{"race":"Orc","class":"Warrior","faction":"Horde","spec":{"name":"Fury","types":["DPS"]}}""";
 
     // ---------- request ----------
 
@@ -56,7 +56,19 @@ public class ComboApiClientTests
 
         var combo = await client.GetRandomComboAsync();
 
-        Assert.Equal(new ComboResponse("Orc", "Warrior", "Horde"), combo);
+        Assert.Equal(new ComboResponse("Orc", "Warrior", "Horde", new SpecResponse("Fury", ["DPS"])), combo);
+    }
+
+    [Fact]
+    public async Task GetRandomComboAsync_PassesTheSpecThrough_IncludingSpecsWithSeveralTypes()
+    {
+        const string feral = """{"race":"Tauren","class":"Druid","faction":"Horde","spec":{"name":"Feral Combat","types":["Tank","DPS"]}}""";
+        var (client, _) = CreateClient(_ => Json(HttpStatusCode.OK, feral));
+
+        var combo = await client.GetRandomComboAsync();
+
+        Assert.Equal("Feral Combat", combo.Spec.Name);
+        Assert.Equal(["Tank", "DPS"], combo.Spec.Types);
     }
 
     // ---------- errors ----------
