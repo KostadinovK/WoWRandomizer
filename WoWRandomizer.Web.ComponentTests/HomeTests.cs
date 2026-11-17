@@ -527,4 +527,71 @@ public class HomeTests : TestContext
             Assert.Empty(cut.FindAll(".result"));
         });
     }
+
+    // ---------- spec (US-15) ----------
+
+    private static string Normalized(AngleSharp.Dom.IElement element) =>
+        string.Join(" ", element.TextContent.Split((char[]?)null, StringSplitOptions.RemoveEmptyEntries));
+
+    [Fact]
+    public void Roll_ShowsTheSpecNameAndTypeOnTheResultCard()
+    {
+        _client.EnqueueResult(OrcWarrior);
+        var cut = RenderComponent<Home>();
+
+        cut.Find("button.roll-button").Click();
+
+        cut.WaitForAssertion(() =>
+        {
+            Assert.Equal("Fury", cut.Find(".result .result-spec-name").TextContent);
+            Assert.Equal(["DPS"], cut.FindAll(".result .spec-type").Select(type => type.TextContent));
+        });
+    }
+
+    [Fact]
+    public void Roll_ForASpecWithSeveralTypes_ShowsEveryType()
+    {
+        _client.EnqueueResult(new ComboResponse("Tauren", "Druid", "Horde", new SpecResponse("Feral Combat", ["Tank", "DPS"])));
+        var cut = RenderComponent<Home>();
+
+        cut.Find("button.roll-button").Click();
+
+        cut.WaitForAssertion(() =>
+        {
+            Assert.Equal("Feral Combat Tank / DPS", Normalized(cut.Find(".result .result-spec")));
+            Assert.Equal(["spec-type-tank", "spec-type-dps"], cut.FindAll(".result .spec-type").Select(type => type.ClassList.Last()));
+        });
+    }
+
+    [Fact]
+    public void History_ShowsTheSpecNameAndTypeOfEveryEntry()
+    {
+        var cut = RenderComponent<Home>();
+
+        RollOnce(cut, OrcWarrior, 1);
+        RollOnce(cut, new ComboResponse("Tauren", "Druid", "Horde", new SpecResponse("Feral Combat", ["Tank", "DPS"])), 2);
+
+        var entries = cut.FindAll(".history-entry");
+        Assert.Equal("Feral Combat Tank / DPS", Normalized(entries[0].QuerySelector(".history-spec")!));
+        Assert.Equal("Fury DPS", Normalized(entries[1].QuerySelector(".history-spec")!));
+    }
+
+    [Fact]
+    public void Roll_WhenARollFailsAfterASuccessfulOne_ShowsNoSpecLeftOverFromTheEarlierRoll()
+    {
+        _client.EnqueueResult(OrcWarrior);
+        _client.EnqueueFailure(new HttpRequestException("Failed to fetch"));
+        var cut = RenderComponent<Home>();
+
+        cut.Find("button.roll-button").Click();
+        cut.WaitForAssertion(() => Assert.NotEmpty(cut.FindAll(".result .result-spec")));
+        cut.Find("button.roll-button").Click();
+
+        cut.WaitForAssertion(() =>
+        {
+            Assert.NotEmpty(cut.FindAll(".error"));
+            Assert.Empty(cut.FindAll(".result .result-spec"));
+            Assert.Empty(cut.FindAll(".result .spec-type"));
+        });
+    }
 }
