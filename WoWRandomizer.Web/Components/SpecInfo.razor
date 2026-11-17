@@ -1,0 +1,25 @@
+@using WoWRandomizer.Shared
+@using WoWRandomizer.Web.Services
+
+<span class="@Prefix-spec">
+    <span class="@Prefix-spec-name">@Spec.Name</span>
+    <span class="spec-types">
+        @for (var index = 0; index < Spec.Types.Count; index++)
+        {
+            var type = Spec.Types[index];
+            if (index > 0)
+            {
+                <span class="spec-type-separator"> / </span>
+            }
+            <span class="spec-type spec-type-@IconPaths.Slug(type)">@type</span>
+        }
+    </span>
+</span>
+
+@code {
+    /// <summary>The spec to show: its name followed by the type(s) it can be played as.</summary>
+    [Parameter, EditorRequired] public SpecResponse Spec { get; set; } = default!;
+
+    /// <summary>Where the spec is shown ("result" or "history"); it names the CSS classes.</summary>
+    [Parameter, EditorRequired] public string Prefix { get; set; } = string.Empty;
+}

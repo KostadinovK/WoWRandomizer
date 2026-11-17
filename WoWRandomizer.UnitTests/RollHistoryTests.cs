@@ -16,6 +16,19 @@ public class RollHistoryTests
     }
 
     [Fact]
+    public void Add_KeepsTheSpecOfEveryEntry()
+    {
+        var feral = new ComboResponse("Tauren", "Druid", "Horde", new SpecResponse("Feral Combat", ["Tank", "DPS"]));
+        var holy = new ComboResponse("Human", "Paladin", "Alliance", new SpecResponse("Holy", ["Healer"]));
+
+        _history.Add(feral);
+        _history.Add(holy);
+
+        Assert.Equal(["Holy", "Feral Combat"], _history.Entries.Select(entry => entry.Spec.Name));
+        Assert.Equal(["Tank", "DPS"], _history.Entries[1].Spec.Types);
+    }
+
+    [Fact]
     public void Add_PutsTheNewestRollFirst()
     {
         _history.Add(Combo(1));

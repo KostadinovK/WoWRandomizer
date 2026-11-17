@@ -357,6 +357,40 @@ h1 {
     color: var(--accent-text);
 }
 
+.result-spec-line {
+    margin: var(--space-2) 0 0;
+}
+
+.result-spec,
+.history-spec {
+    display: inline-flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 0 var(--space-2);
+}
+
+.result-spec-name {
+    color: var(--text);
+    font-size: 1.2rem;
+    font-weight: 600;
+}
+
+.history-spec-name {
+    color: var(--text);
+}
+
+.spec-types {
+    color: var(--text-muted, var(--text));
+    font-size: 0.8em;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+}
+
+.spec-type-separator {
+    opacity: 0.6;
+}
+
 .result-faction {
     margin: var(--space-2) 0 0;
     color: var(--faction-text);
