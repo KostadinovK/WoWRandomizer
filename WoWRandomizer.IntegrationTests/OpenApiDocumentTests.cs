@@ -69,6 +69,31 @@ public class OpenApiDocumentTests : IClassFixture<WebApplicationFactory<Program>
     }
 
     [Fact]
+    public async Task ComboResponseSchema_DescribesTheSpecWithNameAndTypes()
+    {
+        using var document = await GetDocumentAsync();
+        var schemas = document.RootElement.GetProperty("components").GetProperty("schemas");
+
+        Assert.True(schemas.GetProperty("ComboResponse").GetProperty("properties").TryGetProperty("spec", out _));
+
+        var specProperties = schemas.GetProperty("SpecResponse").GetProperty("properties");
+        Assert.True(specProperties.TryGetProperty("name", out _));
+        Assert.Equal("array", specProperties.GetProperty("types").GetProperty("type").GetString());
+        Assert.Equal("string", specProperties.GetProperty("types").GetProperty("items").GetProperty("type").GetString());
+    }
+
+    [Fact]
+    public async Task OkResponse_ShowsAnExampleThatIncludesTheSpec()
+    {
+        var client = _factory.CreateClient();
+
+        var json = await client.GetStringAsync("/openapi/v1.json");
+
+        Assert.Contains("Fury", json);
+        Assert.Contains("types", json);
+    }
+
+    [Fact]
     public async Task SwaggerUi_IsServed()
     {
         var client = _factory.CreateClient();

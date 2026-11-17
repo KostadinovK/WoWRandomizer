@@ -48,6 +48,25 @@ public class ComboEndpointTests : IClassFixture<WebApplicationFactory<Program>>
     }
 
     [Fact]
+    public async Task Get_ReturnsASpecWithANameAndTypesAsText()
+    {
+        var client = _factory.CreateClient();
+
+        var json = await client.GetStringAsync("/api/combo");
+
+        using var document = JsonDocument.Parse(json);
+        var spec = document.RootElement.GetProperty("spec");
+        Assert.False(string.IsNullOrWhiteSpace(spec.GetProperty("name").GetString()));
+        var types = spec.GetProperty("types").EnumerateArray().ToList();
+        Assert.NotEmpty(types);
+        Assert.All(types, type =>
+        {
+            Assert.Equal(JsonValueKind.String, type.ValueKind);
+            Assert.Contains(type.GetString(), new[] { "Tank", "Healer", "DPS" });
+        });
+    }
+
+    [Fact]
     public async Task Get_AlwaysReturnsAValidCombo()
     {
         var client = _factory.CreateClient();
@@ -127,6 +146,8 @@ public class ComboEndpointTests : IClassFixture<WebApplicationFactory<Program>>
         Assert.Contains(ValidCombos, combo =>
             combo.Race == body.Race &&
             combo.CharacterClass == body.Class &&
-            combo.Faction.ToString() == body.Faction);
+            combo.Faction.ToString() == body.Faction &&
+            combo.Spec.Name == body.Spec.Name &&
+            combo.Spec.Types.Select(type => type.ToString()).SequenceEqual(body.Spec.Types));
     }
 }

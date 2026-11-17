@@ -7,5 +7,8 @@ namespace WoWRandomizer.API.Models;
 public static class ComboExtensions
 {
     public static ComboResponse ToResponse(this Combo combo) =>
-        new(combo.Race, combo.CharacterClass, combo.Faction.ToString());
+        new(combo.Race, combo.CharacterClass, combo.Faction.ToString(), combo.Spec.ToResponse());
+
+    public static SpecResponse ToResponse(this Spec spec) =>
+        new(spec.Name, spec.Types.Select(type => type.ToString()).ToList());
 }
