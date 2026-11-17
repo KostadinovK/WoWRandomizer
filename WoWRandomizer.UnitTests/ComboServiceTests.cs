@@ -7,9 +7,9 @@ public class ComboServiceTests
 {
     private static readonly Combo[] SampleCombos =
     [
-        new("Orc", "Warrior", Faction.Horde),
-        new("Human", "Mage", Faction.Alliance),
-        new("Troll", "Priest", Faction.Horde)
+        new("Orc", "Warrior", Faction.Horde, new Spec("Arms", SpecType.DPS)),
+        new("Human", "Mage", Faction.Alliance, new Spec("Fire", SpecType.DPS)),
+        new("Troll", "Priest", Faction.Horde, new Spec("Holy", SpecType.Healer))
     ];
 
     private static JsonComboProvider RealProvider =>
@@ -102,7 +102,7 @@ public class ComboServiceTests
 
         // Two of the three sample combos are Horde, so the pick is made over 2 combos, not 3.
         Assert.Equal(2, random.RequestedUpperBound);
-        Assert.Equal(new Combo("Troll", "Priest", Faction.Horde), combo);
+        Assert.Equal(SampleCombos[2], combo);
     }
 
     [Theory]
@@ -121,14 +121,14 @@ public class ComboServiceTests
             .Select(_ => service.GetRandom(faction))
             .ToHashSet();
 
-        Assert.Equal(28, expected.Count);
+        Assert.Equal(84, expected.Count);
         Assert.True(expected.SetEquals(results));
     }
 
     [Fact]
     public void GetRandom_WithFactionThatHasNoCombos_Throws()
     {
-        var hordeOnly = new FakeComboProvider(new Combo("Orc", "Warrior", Faction.Horde));
+        var hordeOnly = new FakeComboProvider(SampleCombos[0]);
         var service = new ComboService(hordeOnly, new Random(0));
 
         Assert.Throws<InvalidOperationException>(() => service.GetRandom(Faction.Alliance));

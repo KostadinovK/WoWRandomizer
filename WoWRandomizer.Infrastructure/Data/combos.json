@@ -1,4 +1,42 @@
 {
+  "classes": [
+    { "name": "Warrior", "specs": [
+      { "name": "Arms", "types": ["DPS"] },
+      { "name": "Fury", "types": ["DPS"] },
+      { "name": "Protection", "types": ["Tank"] } ] },
+    { "name": "Paladin", "specs": [
+      { "name": "Holy", "types": ["Healer"] },
+      { "name": "Protection", "types": ["Tank"] },
+      { "name": "Retribution", "types": ["DPS"] } ] },
+    { "name": "Hunter", "specs": [
+      { "name": "Beast Mastery", "types": ["DPS"] },
+      { "name": "Marksmanship", "types": ["DPS"] },
+      { "name": "Survival", "types": ["DPS"] } ] },
+    { "name": "Rogue", "specs": [
+      { "name": "Assassination", "types": ["DPS"] },
+      { "name": "Combat", "types": ["DPS"] },
+      { "name": "Subtlety", "types": ["DPS"] } ] },
+    { "name": "Priest", "specs": [
+      { "name": "Discipline", "types": ["Healer"] },
+      { "name": "Holy", "types": ["Healer"] },
+      { "name": "Shadow", "types": ["DPS"] } ] },
+    { "name": "Shaman", "specs": [
+      { "name": "Elemental", "types": ["DPS"] },
+      { "name": "Enhancement", "types": ["DPS"] },
+      { "name": "Restoration", "types": ["Healer"] } ] },
+    { "name": "Mage", "specs": [
+      { "name": "Arcane", "types": ["DPS"] },
+      { "name": "Fire", "types": ["DPS"] },
+      { "name": "Frost", "types": ["DPS"] } ] },
+    { "name": "Warlock", "specs": [
+      { "name": "Affliction", "types": ["DPS"] },
+      { "name": "Demonology", "types": ["DPS"] },
+      { "name": "Destruction", "types": ["DPS"] } ] },
+    { "name": "Druid", "specs": [
+      { "name": "Balance", "types": ["DPS"] },
+      { "name": "Feral Combat", "types": ["Tank", "DPS"] },
+      { "name": "Restoration", "types": ["Healer"] } ] }
+  ],
   "races": [
     { "name": "Orc", "faction": "Horde", "classes": ["Warrior", "Hunter", "Mage", "Rogue", "Warlock", "Shaman"] },
     { "name": "Tauren", "faction": "Horde", "classes": ["Warrior", "Hunter", "Druid", "Shaman"] },
